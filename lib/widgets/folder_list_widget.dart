@@ -90,7 +90,7 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
                       startDate.year.toString())!))] = SliverList(
               delegate: SliverChildListDelegate.fixed(new_list_widget));
 
-          sortType == "ASC"
+          menuSettings[5] == "1"
               ? startDate = DateTime(startDate.year, startDate.month + 1, 1)
               : startDate = DateTime(startDate.year, startDate.month - 1, 1);
         }
@@ -110,24 +110,29 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
 
         folder_list_data.whenOrNull(data: (data) {
           var x = data.where((element) => element.type == objectType);
-          for (var i in x) {
-            new_list_widget.add(ListTile(
-                onTap: () {
-                  i.type == 'directory' ? browseDirectory(i.folderPath) : null;
-                },
-                key: ObjectKey(i.folderPath),
-                leading: objectType == "directory"
-                    ? FaIcon(
-                        FontAwesomeIcons.solidFolder,
-                        color: Colors.amber,
-                      )
-                    : FaIcon(
-                        FontAwesomeIcons.fileAlt,
-                        color: Colors.grey,
-                      ),
-                title: Text(i.folderFileName),
-                trailing: FaIcon(FontAwesomeIcons.ellipsisV,
-                    color: Colors.black, size: 15)));
+
+          if (x.length > 0) {
+            for (var i in x) {
+              new_list_widget.add(ListTile(
+                  onTap: () {
+                    i.type == 'directory'
+                        ? browseDirectory(i.folderPath)
+                        : null;
+                  },
+                  key: ObjectKey(i.folderPath),
+                  leading: objectType == "directory"
+                      ? FaIcon(
+                          FontAwesomeIcons.solidFolder,
+                          color: Colors.amber,
+                        )
+                      : FaIcon(
+                          FontAwesomeIcons.fileAlt,
+                          color: Colors.grey,
+                        ),
+                  title: Text(i.folderFileName),
+                  trailing: FaIcon(FontAwesomeIcons.ellipsisV,
+                      color: Colors.black, size: 15)));
+            }
           }
         });
 
