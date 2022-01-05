@@ -13,9 +13,9 @@ class FolderListWidget extends StatefulHookConsumerWidget {
 }
 
 class FolderListWidgetState extends ConsumerState<FolderListWidget> {
-  String sortType = '';
-  String sortColumn = '';
-  String filterColumn = '';
+  // String sortType = '';
+  // String sortColumn = '';
+  // String filterColumn = '';
   @override
   Widget build(BuildContext context) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
@@ -37,7 +37,7 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
     List<Widget> widget_list = [];
     List<String> distinct_type = [];
 
-    if (sortColumn == "modifiedDate") {
+    if (menuSettings[5] != '0') {
       folder_list_data.whenOrNull(data: (data) {
         int startMonth;
         int endMonth;
