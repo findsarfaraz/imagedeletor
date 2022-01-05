@@ -149,15 +149,12 @@ class FolderListScreen extends HookConsumerWidget {
             ),
           ),
           Flexible(
-              fit: FlexFit.tight,
-              flex: 10,
-              child:
-                  // FolderListWidget()
-                  // providerMenuSettings.menuSettings[0] == "1"
-                  // ?
-                  FolderListWidget()
-              // : FolderGridWidget(),
-              ),
+            fit: FlexFit.tight,
+            flex: 10,
+            child: providerMenuSettings.menuSettings[0] == "1"
+                ? FolderListWidget()
+                : FolderGridWidget(),
+          ),
         ]));
   }
 
