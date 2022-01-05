@@ -13,9 +13,6 @@ class FolderGridWidget extends StatefulHookConsumerWidget {
 }
 
 class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
-  // String sortType = '';
-  // String sortColumn = '';
-  // String filterColumn = '';
   @override
   Widget build(BuildContext context) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
