@@ -152,8 +152,12 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
               key: ObjectKey(objectType),
               delegate: RecordPersistentHeader(
                   intl.toBeginningOfSentenceCase(objectType)!))] = SliverGrid(
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio:
+                      new_list_widget.length / (new_list_widget.length / 3),
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10),
               delegate: SliverChildListDelegate(new_list_widget));
         });
       });
