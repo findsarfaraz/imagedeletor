@@ -101,7 +101,7 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
                         startDate.month.toString() +
                         startDate.year.toString()),
                     delegate: RecordPersistentHeader(intl.toBeginningOfSentenceCase(
-                        "${monthList[startDate.month - 1]} - ${startDate.year.toString()}")!))] =
+                        "${monthList[startDate.month - 1]} ${startDate.year.toString()}")!))] =
                 SliverList(
                     delegate: SliverChildListDelegate.fixed(new_list_widget));
           }
