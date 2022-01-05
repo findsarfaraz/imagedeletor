@@ -110,13 +110,13 @@ class FolderListScreen extends HookConsumerWidget {
                 )),
             PopupMenuButton(
                 onSelected: (value) {
-                  if (value == 1) {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return NewFolderFileWidget();
-                        });
-                  }
+                  print(value.toString());
+
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return NewFolderFileWidget(value.toString());
+                      });
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(

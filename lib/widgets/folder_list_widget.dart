@@ -21,7 +21,20 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
 
     final folderPath = ref.watch(folderPathProvier);
-
+    const monthList = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
     void browseDirectory(String path) async {
       await ref.read(folderListAsyncProvider.notifier).fetch(path);
 
@@ -61,34 +74,37 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
                   element.modifiedDate.year == startDate.year)
               .toList();
 
-          for (var i in x) {
-            new_list_widget.add(ListTile(
-                onTap: () {
-                  i.type == 'directory' ? browseDirectory(i.folderPath) : null;
-                },
-                key: ObjectKey(i.folderPath),
-                leading: i.type == "directory"
-                    ? FaIcon(
-                        FontAwesomeIcons.solidFolder,
-                        color: Colors.amber,
-                      )
-                    : FaIcon(
-                        FontAwesomeIcons.fileAlt,
-                        color: Colors.grey,
-                      ),
-                title: Text(i.folderFileName),
-                trailing: FaIcon(FontAwesomeIcons.ellipsisV,
-                    color: Colors.black, size: 15)));
+          if (x.length > 0) {
+            for (var i in x) {
+              new_list_widget.add(ListTile(
+                  onTap: () {
+                    i.type == 'directory'
+                        ? browseDirectory(i.folderPath)
+                        : null;
+                  },
+                  key: ObjectKey(i.folderPath),
+                  leading: i.type == "directory"
+                      ? FaIcon(
+                          FontAwesomeIcons.solidFolder,
+                          color: Colors.amber,
+                        )
+                      : FaIcon(
+                          FontAwesomeIcons.fileAlt,
+                          color: Colors.grey,
+                        ),
+                  title: Text(i.folderFileName),
+                  trailing: FaIcon(FontAwesomeIcons.ellipsisV,
+                      color: Colors.black, size: 15)));
+            }
+            sliver_widget_map[SliverPersistentHeader(
+                    key: ObjectKey('Date : ' +
+                        startDate.month.toString() +
+                        startDate.year.toString()),
+                    delegate: RecordPersistentHeader(intl.toBeginningOfSentenceCase(
+                        "${monthList[startDate.month - 1]} - ${startDate.year.toString()}")!))] =
+                SliverList(
+                    delegate: SliverChildListDelegate.fixed(new_list_widget));
           }
-          sliver_widget_map[SliverPersistentHeader(
-              key: ObjectKey('Date : ' +
-                  startDate.month.toString() +
-                  startDate.year.toString()),
-              delegate: RecordPersistentHeader(intl.toBeginningOfSentenceCase(
-                  'Date : ' +
-                      startDate.month.toString() +
-                      startDate.year.toString())!))] = SliverList(
-              delegate: SliverChildListDelegate.fixed(new_list_widget));
 
           menuSettings[5] == "1"
               ? startDate = DateTime(startDate.year, startDate.month + 1, 1)
@@ -111,36 +127,33 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
         folder_list_data.whenOrNull(data: (data) {
           var x = data.where((element) => element.type == objectType);
 
-          if (x.length > 0) {
-            for (var i in x) {
-              new_list_widget.add(ListTile(
-                  onTap: () {
-                    i.type == 'directory'
-                        ? browseDirectory(i.folderPath)
-                        : null;
-                  },
-                  key: ObjectKey(i.folderPath),
-                  leading: objectType == "directory"
-                      ? FaIcon(
-                          FontAwesomeIcons.solidFolder,
-                          color: Colors.amber,
-                        )
-                      : FaIcon(
-                          FontAwesomeIcons.fileAlt,
-                          color: Colors.grey,
-                        ),
-                  title: Text(i.folderFileName),
-                  trailing: FaIcon(FontAwesomeIcons.ellipsisV,
-                      color: Colors.black, size: 15)));
-            }
+          if (x.length > 0) {}
+          for (var i in x) {
+            new_list_widget.add(ListTile(
+                onTap: () {
+                  i.type == 'directory' ? browseDirectory(i.folderPath) : null;
+                },
+                key: ObjectKey(i.folderPath),
+                leading: objectType == "directory"
+                    ? FaIcon(
+                        FontAwesomeIcons.solidFolder,
+                        color: Colors.amber,
+                      )
+                    : FaIcon(
+                        FontAwesomeIcons.fileAlt,
+                        color: Colors.grey,
+                      ),
+                title: Text(i.folderFileName),
+                trailing: FaIcon(FontAwesomeIcons.ellipsisV,
+                    color: Colors.black, size: 15)));
           }
-        });
 
-        sliver_widget_map[SliverPersistentHeader(
-            key: ObjectKey(objectType),
-            delegate: RecordPersistentHeader(
-                intl.toBeginningOfSentenceCase(objectType)!))] = SliverList(
-            delegate: SliverChildListDelegate.fixed(new_list_widget));
+          sliver_widget_map[SliverPersistentHeader(
+              key: ObjectKey(objectType),
+              delegate: RecordPersistentHeader(
+                  intl.toBeginningOfSentenceCase(objectType)!))] = SliverList(
+              delegate: SliverChildListDelegate.fixed(new_list_widget));
+        });
       });
     }
 

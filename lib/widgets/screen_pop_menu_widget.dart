@@ -9,25 +9,23 @@ import 'dart:io' as io;
 import 'package:imagedeletor/providers/permission_provider.dart';
 
 class NewFolderFileWidget extends HookConsumerWidget {
-  NewFolderFileWidget({Key? key}) : super(key: key);
+  final String optVal;
 
+  NewFolderFileWidget(this.optVal);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final folderPath = ref.watch(folderPathProvier);
     final controller = useTextEditingController();
-    String folderName = "New folder";
-
-    void saveFolder() async {
-      await io.Directory(folderPath + '/' + folderName).create(recursive: true);
-    }
+    String filefolderName = optVal == "1" ? "Folder" : "File";
 
     return AlertDialog(
-      title: Text("Create New file"),
+      title: Text("Create New ${filefolderName}"),
       content: TextField(
         controller: controller,
-        decoration: InputDecoration(hintText: "Enter File Name"),
+        decoration:
+            InputDecoration(hintText: "Enter New ${filefolderName} Name"),
         onChanged: (value) {
-          folderName = controller.text;
+          filefolderName = controller.text;
         },
       ),
       actions: [
@@ -42,10 +40,14 @@ class NewFolderFileWidget extends HookConsumerWidget {
             ref
                 .read(devicePermissionProvider.notifier)
                 .getExternalStoragePermission();
-            saveFolder();
-            ref
-                .read(folderListAsyncProvider.notifier)
-                .addNewFolder("${folderPath}/${folderName}");
+
+            optVal == "1"
+                ? ref
+                    .read(folderListAsyncProvider.notifier)
+                    .addNewFolder("${folderPath}/${filefolderName}")
+                : ref
+                    .read(folderListAsyncProvider.notifier)
+                    .addNewFile("${folderPath}/${filefolderName}");
             Navigator.pop(context);
           },
           child: Text("Save"),
