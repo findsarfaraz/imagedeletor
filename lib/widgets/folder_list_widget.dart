@@ -22,42 +22,6 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
 
     final folderPath = ref.watch(folderPathProvier);
 
-    if (menuSettings[2] == "1") {
-      sortType = 'ASC';
-      sortColumn = 'folderName';
-    } else if (menuSettings[2] == "2") {
-      sortType = 'DESC';
-      sortColumn = 'folderName';
-    } else if (menuSettings[3] == "1") {
-      sortType = 'ASC';
-      sortColumn = 'folderSize';
-    } else if (menuSettings[3] == "2") {
-      sortType = 'DESC';
-      sortColumn = 'folderSize';
-    } else if (menuSettings[4] == "1") {
-      sortType = 'ASC';
-      sortColumn = 'fileExtension';
-    } else if (menuSettings[4] == "2") {
-      sortType = 'DESC';
-      sortColumn = 'fileExtension';
-    } else if (menuSettings[5] == "1") {
-      sortType = 'ASC';
-      sortColumn = 'modifiedDate';
-    } else if (menuSettings[5] == "2") {
-      sortType = 'DESC';
-      sortColumn = 'modifiedDate';
-    }
-
-    if (menuSettings[7] == "1") {
-      filterColumn = 'picture';
-    } else if (menuSettings[8] == "1") {
-      filterColumn = 'video';
-    } else if (menuSettings[9] == "1") {
-      filterColumn = 'document';
-    } else if (menuSettings[10] == "1") {
-      filterColumn = 'music';
-    }
-
     void browseDirectory(String path) async {
       await ref.read(folderListAsyncProvider.notifier).fetch(path);
 
@@ -66,8 +30,8 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
 
     ;
 
-    AsyncValue<List<FolderListModel>> folder_list_data = ref.watch(
-        folderListSorted([sortType, sortColumn, filterColumn, "directory"]));
+    AsyncValue<List<FolderListModel>> folder_list_data =
+        ref.watch(folderListFutureProvider);
 
     Map<SliverPersistentHeader, SliverList> sliver_widget_map = {};
     List<Widget> widget_list = [];
