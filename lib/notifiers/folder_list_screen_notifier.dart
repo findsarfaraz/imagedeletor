@@ -54,4 +54,28 @@ class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
 
     return folderListFinal;
   }
+
+  void addNewFolder(String folderPath) async {
+    try {
+      final newDir = io.Directory(folderPath);
+      await io.Directory(folderPath).create(recursive: true);
+
+      final fileStat = newDir.statSync();
+      final folderModel = FolderListModel(
+          accessDate: fileStat.accessed,
+          changeDate: fileStat.changed,
+          fileExtension: fileStat.type.toString(),
+          folderAbsolutePath: newDir.absolute.toString(),
+          folderPath: folderPath,
+          folderFileName: func_list.get_folder_name(newDir.absolute.toString()),
+          folderSize: fileStat.size.toDouble(),
+          modifiedDate: fileStat.modified,
+          parentFolder: newDir.parent.toString(),
+          type: fileStat.type.toString());
+
+      state = [...state, folderModel];
+    } catch (e) {
+      print("Error: addNewFolder: ${e.toString()}");
+    }
+  }
 }

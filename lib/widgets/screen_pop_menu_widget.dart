@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
 import 'dart:io' as io;
 
@@ -42,6 +43,9 @@ class NewFolderFileWidget extends HookConsumerWidget {
                 .read(devicePermissionProvider.notifier)
                 .getExternalStoragePermission();
             saveFolder();
+            ref
+                .read(folderListAsyncProvider.notifier)
+                .addNewFolder("${folderPath}/${folderName}");
             Navigator.pop(context);
           },
           child: Text("Save"),

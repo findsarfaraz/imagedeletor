@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
+import 'package:imagedeletor/providers/generic_provider.dart';
 import 'package:imagedeletor/widgets/drawer_widget.dart';
 import 'package:imagedeletor/widgets/folder_grid_widget.dart';
 import 'package:imagedeletor/widgets/folder_list_widget.dart';
@@ -41,6 +42,8 @@ class FolderListScreen extends HookConsumerWidget {
     screenHeight = MediaQuery.of(context).size.height;
 
     final providerMenuSettings = ref.watch(folderSettingNotifierProvider);
+
+    final folderPath = ref.watch(folderPathProvier.state).state;
 
     void closeMenu(AnimationController animationController) {
       isMenuOpen = !isMenuOpen;
@@ -117,6 +120,7 @@ class FolderListScreen extends HookConsumerWidget {
                 },
                 itemBuilder: (context) => [
                       PopupMenuItem(
+                        onTap: () {},
                         child: Text("New Folder"),
                         value: 1,
                       ),
@@ -145,14 +149,15 @@ class FolderListScreen extends HookConsumerWidget {
             ),
           ),
           Flexible(
-            fit: FlexFit.tight,
-            flex: 10,
-            child:
-                // FolderListWidget()
-                providerMenuSettings.menuSettings[0] == "1"
-                    ? FolderListWidget()
-                    : FolderGridWidget(),
-          ),
+              fit: FlexFit.tight,
+              flex: 10,
+              child:
+                  // FolderListWidget()
+                  // providerMenuSettings.menuSettings[0] == "1"
+                  // ?
+                  FolderListWidget()
+              // : FolderGridWidget(),
+              ),
         ]));
   }
 
