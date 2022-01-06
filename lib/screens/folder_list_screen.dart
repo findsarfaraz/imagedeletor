@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
+import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
 import 'package:imagedeletor/widgets/drawer_widget.dart';
 import 'package:imagedeletor/widgets/folder_grid_widget.dart';
@@ -142,6 +143,7 @@ class FolderListScreen extends HookConsumerWidget {
             child: Container(
               padding: EdgeInsets.all(0),
               margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+              child: FolderTrackBackWidget(),
               decoration: BoxDecoration(color: Colors.white, boxShadow: [
                 BoxShadow(blurRadius: 2, spreadRadius: 1, color: Colors.grey)
               ]),
@@ -177,5 +179,19 @@ class FolderListScreen extends HookConsumerWidget {
               aniController: animationController,
               isMenuOpen: isMenuOpen);
     });
+  }
+}
+
+class FolderTrackBackWidget extends ConsumerWidget {
+  const FolderTrackBackWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final data = ref.watch(folderTrackBackProvider);
+    return ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (BuildContext context, index) {
+          return Text(data[index].FolderName);
+        });
   }
 }
