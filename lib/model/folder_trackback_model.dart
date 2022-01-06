@@ -11,9 +11,10 @@ class FolderTrackBackModel {
   });
 }
 
-class FolderTrackBackData {
-  List<FolderTrackBackModel> folderTrackBack;
-  FolderTrackBackData({
-    required this.folderTrackBack,
+class FolderTrackBackModelData {
+  List<FolderTrackBackModel> folderTrackBackmodelData;
+
+  FolderTrackBackModelData({
+    required this.folderTrackBackmodelData,
   });
 }
