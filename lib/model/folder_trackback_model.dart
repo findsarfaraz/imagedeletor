@@ -11,25 +11,9 @@ class FolderTrackBackModel {
   });
 }
 
-class FolderTrackBackData with ChangeNotifier {
+class FolderTrackBackData {
   List<FolderTrackBackModel> folderTrackBack;
-
   FolderTrackBackData({
     required this.folderTrackBack,
   });
-
-  void modifyFolderBackTrack(String folderName, String folderPath) {
-    List<FolderTrackBackModel> folderTrackBackModel = [];
-
-    folderTrackBackModel.forEach((element) {
-      if (element.folderPath == folderPath) {
-        while (element.folderPath != folderPath) {
-          folderTrackBackModel.removeLast();
-        }
-      } else {
-        folderTrackBackModel.add(FolderTrackBackModel(
-            FolderName: folderName, folderPath: folderPath));
-      }
-    });
-  }
 }
