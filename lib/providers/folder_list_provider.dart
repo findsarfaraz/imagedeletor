@@ -15,6 +15,7 @@ final folderListAsyncProvider =
 final folderStateProvider = StateProvider<List<FolderListModel>>((ref) {
   List<FolderListModel> requireData = [];
   List<FolderListModel> filterData = [];
+
   final data = ref.watch(folderListAsyncProvider);
   final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
   final filterList = ref.watch(providerFilterListProvider).filterList;
