@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imagedeletor/model/folder_list_model.dart';
 import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
+import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
 import 'package:intl/intl.dart' as intl;
 import 'dart:io' as io;
@@ -13,6 +14,9 @@ class FolderGridWidget extends StatefulHookConsumerWidget {
 }
 
 class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
+  // String sortType = '';
+  // String sortColumn = '';
+  // String filterColumn = '';
   @override
   Widget build(BuildContext context) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
@@ -32,10 +36,9 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
       "Nov",
       "Dec"
     ];
-    void browseDirectory(String path) async {
-      await ref.read(folderListAsyncProvider.notifier).fetch(path);
 
-      ref.read(folderPathStateProvider.state).state = path;
+    void browseDirectory(String path) async {
+      await ref.read(folderPathStateNotifierProvider.notifier).updatePath(path);
     }
 
     ;
@@ -93,13 +96,12 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
                   trailing: FaIcon(FontAwesomeIcons.ellipsisV,
                       color: Colors.black, size: 15)));
             }
-
             sliver_widget_map[SliverPersistentHeader(
                     key: ObjectKey('Date : ' +
                         startDate.month.toString() +
                         startDate.year.toString()),
                     delegate: RecordPersistentHeader(intl.toBeginningOfSentenceCase(
-                        "${monthList[startDate.month - 1]} - ${startDate.year.toString()}")!))] =
+                        "${monthList[startDate.month - 1]} ${startDate.year.toString()}")!))] =
                 SliverGrid(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2),
@@ -151,13 +153,9 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
               key: ObjectKey(objectType),
               delegate: RecordPersistentHeader(
                   intl.toBeginningOfSentenceCase(objectType)!))] = SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio:
-                      new_list_widget.length / (new_list_widget.length / 3),
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10),
-              delegate: SliverChildListDelegate(new_list_widget));
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+              delegate: SliverChildListDelegate.fixed(new_list_widget));
         });
       });
     }
