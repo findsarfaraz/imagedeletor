@@ -9,7 +9,7 @@ import 'dart:io' as io;
 final folderListAsyncProvider =
     StateNotifierProvider<FolderListStateNotifier, List<FolderListModel>>(
         (ref) {
-  return FolderListStateNotifier();
+  return FolderListStateNotifier(ref);
 });
 
 final folderStateProvider = StateProvider<List<FolderListModel>>((ref) {

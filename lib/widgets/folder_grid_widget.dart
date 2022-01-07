@@ -17,7 +17,7 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
   Widget build(BuildContext context) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
 
-    final folderPath = ref.watch(folderPathProvier);
+    final folderPath = ref.watch(folderPathProvider);
     const monthList = [
       "Jan",
       "Feb",
@@ -35,7 +35,7 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
     void browseDirectory(String path) async {
       await ref.read(folderListAsyncProvider.notifier).fetch(path);
 
-      ref.read(folderPathProvier.state).state = path;
+      ref.read(folderPathStateProvider.state).state = path;
     }
 
     ;

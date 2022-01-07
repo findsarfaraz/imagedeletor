@@ -44,7 +44,7 @@ class FolderListScreen extends HookConsumerWidget {
 
     final providerMenuSettings = ref.watch(folderSettingNotifierProvider);
 
-    final folderPath = ref.watch(folderPathProvier.state).state;
+    final folderPath = ref.watch(folderPathStateProvider.state).state;
 
     void closeMenu(AnimationController animationController) {
       isMenuOpen = !isMenuOpen;

@@ -42,7 +42,7 @@ class PopUpMenu extends StatelessWidget {
     bool saveCheckBox = false;
 
     return Consumer(builder: (_, WidgetRef ref, __) {
-      final folderPath = ref.watch(folderPathProvier);
+      final folderPath = ref.watch(folderPathProvider);
 
       if (initLoad = false) {
         ref

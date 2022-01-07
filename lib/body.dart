@@ -53,7 +53,7 @@ class BodyScreen extends ConsumerWidget {
                       .read(folderListAsyncProvider.notifier)
                       .fetch('/storage/emulated/0');
 
-                  ref.read(folderPathProvier.state).state =
+                  ref.read(folderPathStateProvider.state).state =
                       '/storage/emulated/0';
                   ref
                       .read(folderTrackBackStateNotifierProvider.notifier)

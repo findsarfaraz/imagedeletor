@@ -21,7 +21,7 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
   Widget build(BuildContext context) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
 
-    final folderPath = ref.watch(folderPathProvier);
+    final folderPath = ref.watch(folderPathProvider);
     const monthList = [
       "Jan",
       "Feb",
@@ -41,7 +41,7 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
       ref
           .read(folderTrackBackStateNotifierProvider.notifier)
           .modifyFolderBackTrack(path);
-      ref.read(folderPathProvier.state).state = path;
+      ref.read(folderPathStateProvider.state).state = path;
     }
 
     ;

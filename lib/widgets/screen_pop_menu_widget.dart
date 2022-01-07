@@ -14,7 +14,7 @@ class NewFolderFileWidget extends HookConsumerWidget {
   NewFolderFileWidget(this.optVal);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final folderPath = ref.watch(folderPathProvier);
+    final folderPath = ref.watch(folderPathProvider);
     final controller = useTextEditingController();
     String filefolderName = optVal == "1" ? "Folder" : "File";
 

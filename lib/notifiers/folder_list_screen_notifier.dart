@@ -6,7 +6,7 @@ import 'package:riverpod/riverpod.dart';
 import '../misc_function.dart' as misc_func;
 
 class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
-  FolderListStateNotifier() : super([]);
+  FolderListStateNotifier(ref) : super([]);
 
   final func_list = misc_func.MiscFunction();
 

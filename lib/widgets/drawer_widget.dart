@@ -31,11 +31,12 @@ class DrawerWidget extends ConsumerWidget {
           // Divider(height: 2),
           ListTile(
               onTap: () async {
-                await ref
-                    .read(folderListAsyncProvider.notifier)
-                    .fetch('/storage/emulated/0');
+                // await ref
+                //     .read(folderListAsyncProvider.notifier)
+                //     .fetch('/storage/emulated/0');
 
-                ref.read(folderPathProvier.state).state = '/storage/emulated/0';
+                ref.read(folderPathStateProvider.state).state =
+                    '/storage/emulated/0';
                 Navigator.of(context).pushNamed(FolderListScreen.routeName);
               },
               leading: FaIcon(FontAwesomeIcons.memory),
