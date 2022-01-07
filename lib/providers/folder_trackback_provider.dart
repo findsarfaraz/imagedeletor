@@ -8,7 +8,11 @@ final folderTrackBackStateNotifierProvider =
   return FolderTrackBackNotifier();
 });
 
-final folderTrackBackProvider = Provider((ref) {
+final folderTrackBackProvider = StateProvider((ref) {
   final data = ref.watch(folderTrackBackStateNotifierProvider);
+
+  data.forEach((element) {
+    print(element.FolderName);
+  });
   return data;
 });

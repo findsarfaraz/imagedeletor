@@ -18,6 +18,10 @@ class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
       List<FolderListModel> folderListFinal = [];
       folderListFinal = await fetchStats(folder_list);
 
+      folder_list.forEach((element) {
+        print(element.absolute);
+      });
+
       state = folderListFinal;
     } catch (e) {
       print("Error: fetch : ${e.toString()}");
@@ -40,7 +44,7 @@ class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
             folderFileName: func_list.get_folder_name(f.absolute.toString()),
             folderSize: fileStat.size.toDouble(),
             fileExtension: fileStat.type.toString().toLowerCase() == "file"
-                ? func_list.get_file_extension(f.absolute.toString())
+                ? func_list.get_file_extension(f.path.toString())
                 : '',
             type: fileStat.type.toString(),
             modifiedDate: fileStat.modified,
@@ -65,7 +69,7 @@ class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
           fileExtension: fileStat.type.toString(),
           folderAbsolutePath: newDir.absolute.toString(),
           folderPath: folderPath,
-          folderFileName: func_list.get_folder_name(newDir.absolute.toString()),
+          folderFileName: func_list.get_folder_name(newDir.path.toString()),
           folderSize: fileStat.size.toDouble(),
           modifiedDate: fileStat.modified,
           parentFolder: newDir.parent.toString(),
@@ -89,8 +93,7 @@ class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
           fileExtension: fileStat.type.toString(),
           folderAbsolutePath: newFile.absolute.toString(),
           folderPath: filePath,
-          folderFileName:
-              func_list.get_folder_name(newFile.absolute.toString()),
+          folderFileName: func_list.get_folder_name(newFile.path.toString()),
           folderSize: fileStat.size.toDouble(),
           modifiedDate: fileStat.modified,
           parentFolder: newFile.parent.toString(),

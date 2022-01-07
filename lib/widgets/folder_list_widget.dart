@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imagedeletor/model/folder_list_model.dart';
 import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
+import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
 import 'package:intl/intl.dart' as intl;
 import 'dart:io' as io;
@@ -37,7 +38,9 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
     ];
     void browseDirectory(String path) async {
       await ref.read(folderListAsyncProvider.notifier).fetch(path);
-
+      ref
+          .read(folderTrackBackStateNotifierProvider.notifier)
+          .modifyFolderBackTrack(path);
       ref.read(folderPathProvier.state).state = path;
     }
 

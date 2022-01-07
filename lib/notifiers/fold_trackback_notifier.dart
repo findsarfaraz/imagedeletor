@@ -13,17 +13,39 @@ class FolderTrackBackNotifier
 
     folderTrackBackModelList = state;
     final String folderName = func_list.get_folder_name(folderPath);
-
-    folderTrackBackModelList.forEach((element) {
-      if (element.folderPath == folderPath) {
-        while (element.folderPath != folderPath) {
-          folderTrackBackModelList.removeLast();
-        }
+    try {
+      if (folderTrackBackModelList.length > 0) {
+        folderTrackBackModelList.forEach((element) {
+          if (element.folderPath == folderPath) {
+            removeFolderPath(folderPath);
+          } else {
+            folderTrackBackModelList.add(FolderTrackBackModel(
+                FolderName: folderName, folderPath: folderPath));
+          }
+        });
       } else {
         folderTrackBackModelList.add(FolderTrackBackModel(
             FolderName: folderName, folderPath: folderPath));
       }
-      state = folderTrackBackModelList;
-    });
+    } catch (e) {
+      print("ERROR: modifyFolderBackTrack ${e.toString()}");
+    }
+
+    state = folderTrackBackModelList;
+  }
+
+  void removeFolderPath(String path) {
+    List<FolderTrackBackModel> folderTrackBackModelList;
+    folderTrackBackModelList = state;
+    final firstElement = folderTrackBackModelList
+        .where((element) => element.folderPath == path)
+        .first;
+    final lastElement = folderTrackBackModelList.last;
+
+    final firstIndex = folderTrackBackModelList.indexOf(firstElement) + 1;
+    final lastIndex = folderTrackBackModelList.indexOf(lastElement);
+
+    folderTrackBackModelList.removeRange(firstIndex, lastIndex + 1);
+    state = folderTrackBackModelList;
   }
 }
