@@ -200,9 +200,10 @@ class FolderTrackBackWidget extends ConsumerWidget {
               child: InkWell(
                 onTap: () {},
                 child: Container(
+                    padding: EdgeInsets.all(10),
                     child: Text(data[index].FolderName,
                         style:
-                            TextStyle(color: Colors.grey[700], fontSize: 20))),
+                            TextStyle(color: Colors.grey[700], fontSize: 18))),
               ));
         });
   }

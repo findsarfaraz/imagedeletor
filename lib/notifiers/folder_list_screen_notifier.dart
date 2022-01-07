@@ -41,7 +41,7 @@ class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
             changeDate: fileStat.changed,
             folderAbsolutePath: f.absolute.toString(),
             folderPath: f.path,
-            folderFileName: func_list.get_folder_name(f.absolute.toString()),
+            folderFileName: func_list.get_folder_name(f.path.toString()),
             folderSize: fileStat.size.toDouble(),
             fileExtension: fileStat.type.toString().toLowerCase() == "file"
                 ? func_list.get_file_extension(f.path.toString())

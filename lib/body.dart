@@ -49,15 +49,8 @@ class BodyScreen extends ConsumerWidget {
                       'Internal Storage', Colors.red, state.sizeInfo),
                 ),
                 onTap: () async {
-                  await ref
-                      .read(folderListAsyncProvider.notifier)
-                      .fetch('/storage/emulated/0');
-
                   ref.read(folderPathStateProvider.state).state =
                       '/storage/emulated/0';
-                  ref
-                      .read(folderTrackBackStateNotifierProvider.notifier)
-                      .modifyFolderBackTrack('/storage/emulated/0');
 
                   Navigator.of(context).push(
                     MaterialPageRoute(

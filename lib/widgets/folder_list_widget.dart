@@ -36,11 +36,8 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
       "Nov",
       "Dec"
     ];
+
     void browseDirectory(String path) async {
-      await ref.read(folderListAsyncProvider.notifier).fetch(path);
-      ref
-          .read(folderTrackBackStateNotifierProvider.notifier)
-          .modifyFolderBackTrack(path);
       ref.read(folderPathStateProvider.state).state = path;
     }
 
