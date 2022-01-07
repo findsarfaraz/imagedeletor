@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:imagedeletor/providers/favorite_folder_provider.dart';
 import 'package:imagedeletor/providers/folder_list_provider.dart';
+import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
 import 'package:imagedeletor/screens/folder_list_screen.dart';
 import 'package:imagedeletor/state_manager/folder_screen_state.dart';
@@ -54,6 +55,10 @@ class BodyScreen extends ConsumerWidget {
 
                   ref.read(folderPathProvier.state).state =
                       '/storage/emulated/0';
+                  ref
+                      .read(folderTrackBackStateNotifierProvider.notifier)
+                      .modifyFolderBackTrack('/storage/emulated/0');
+
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       settings: RouteSettings(name: FolderListScreen.routeName),
