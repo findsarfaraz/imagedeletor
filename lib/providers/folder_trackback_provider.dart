@@ -11,8 +11,10 @@ final folderTrackBackStateNotifierProvider =
 final folderTrackBackProvider = StateProvider((ref) {
   final data = ref.watch(folderTrackBackStateNotifierProvider);
 
-  data.forEach((element) {
-    print(element.FolderName);
-  });
+  return data;
+});
+
+final folderTrackBackFutureProvider = FutureProvider((ref) async {
+  final data = await ref.watch(folderTrackBackProvider);
   return data;
 });

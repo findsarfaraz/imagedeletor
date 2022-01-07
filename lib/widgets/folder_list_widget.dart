@@ -38,7 +38,7 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
     ];
 
     void browseDirectory(String path) async {
-      ref.read(folderPathStateProvider.state).state = path;
+      await ref.read(folderPathStateNotifierProvider.notifier).updatePath(path);
     }
 
     ;
@@ -127,7 +127,6 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
         folder_list_data.whenOrNull(data: (data) {
           var x = data.where((element) => element.type == objectType);
 
-          if (x.length > 0) {}
           for (var i in x) {
             new_list_widget.add(ListTile(
                 onTap: () {

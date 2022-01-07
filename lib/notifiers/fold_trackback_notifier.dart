@@ -8,24 +8,24 @@ class FolderTrackBackNotifier
   FolderTrackBackNotifier() : super([]);
   final func_list = MiscFunction();
 
-  void modifyFolderBackTrack(String folderPath) {
+  Future<void> modifyFolderBackTrack(String folderPath) async {
     List<FolderTrackBackModel> folderTrackBackModelList;
 
     folderTrackBackModelList = state;
     final String folderName = func_list.get_folder_name(folderPath);
     try {
       if (folderTrackBackModelList.length > 0) {
-        folderTrackBackModelList.forEach((element) {
-          if (element.folderPath == folderPath) {
-            removeFolderPath(folderPath);
-          } else {
-            folderTrackBackModelList.add(FolderTrackBackModel(
-                FolderName: folderName, folderPath: folderPath));
-          }
-        });
+        final value = folderTrackBackModelList
+            .where((element) => element.folderPath == folderPath);
+        if (value.isNotEmpty) {
+          removeFolderPath(folderPath);
+        } else {
+          folderTrackBackModelList.add(FolderTrackBackModel(
+              folderName: folderName, folderPath: folderPath));
+        }
       } else {
         folderTrackBackModelList.add(FolderTrackBackModel(
-            FolderName: folderName, folderPath: folderPath));
+            folderName: folderName, folderPath: folderPath));
       }
     } catch (e) {
       print("ERROR: modifyFolderBackTrack ${e.toString()}");
@@ -43,9 +43,16 @@ class FolderTrackBackNotifier
     final lastElement = folderTrackBackModelList.last;
 
     final firstIndex = folderTrackBackModelList.indexOf(firstElement) + 1;
-    final lastIndex = folderTrackBackModelList.indexOf(lastElement);
+    final lastIndex = folderTrackBackModelList.indexOf(lastElement) + 1;
 
-    folderTrackBackModelList.removeRange(firstIndex, lastIndex + 1);
+    if (firstIndex == lastIndex) {
+      folderTrackBackModelList.removeAt(lastIndex);
+    } else {
+      folderTrackBackModelList.removeRange(firstIndex, lastIndex);
+    }
+    folderTrackBackModelList.forEach((element) {
+      print(element.folderName);
+    });
     state = folderTrackBackModelList;
   }
 }

@@ -188,20 +188,18 @@ class FolderTrackBackWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(folderTrackBackProvider);
-    data.forEach((element) {
-      print(element.FolderName);
-    });
+
     return ListView.builder(
         itemCount: data.length,
         scrollDirection: Axis.horizontal,
-        itemBuilder: (BuildContext context, index) {
+        itemBuilder: (BuildContext context, int index) {
           return Align(
               alignment: Alignment.centerLeft,
               child: InkWell(
                 onTap: () {},
                 child: Container(
                     padding: EdgeInsets.all(10),
-                    child: Text(data[index].FolderName,
+                    child: Text(data[index].folderName,
                         style:
                             TextStyle(color: Colors.grey[700], fontSize: 18))),
               ));
