@@ -189,20 +189,39 @@ class FolderTrackBackWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(folderTrackBackProvider);
 
-    return ListView.builder(
-        itemCount: data.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (BuildContext context, int index) {
-          return Align(
-              alignment: Alignment.centerLeft,
-              child: InkWell(
-                onTap: () {},
-                child: Container(
-                    padding: EdgeInsets.all(10),
-                    child: Text(data[index].folderName,
-                        style:
-                            TextStyle(color: Colors.grey[700], fontSize: 18))),
-              ));
-        });
+    return Container(
+      padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+      child: ListView.builder(
+          itemCount: data.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (BuildContext context, int index) {
+            return Align(
+                alignment: Alignment.centerLeft,
+                child: InkWell(
+                  onTap: () async {
+                    await ref
+                        .read(folderPathStateNotifierProvider.notifier)
+                        .updatePath(data[index].folderPath);
+                  },
+                  child: Container(
+                      padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                      child: Row(children: [
+                        (index == 0 && data[index].folderName == "0")
+                            ? Container(
+                                child: FaIcon(FontAwesomeIcons.mobileAlt,
+                                    size: 18, color: Colors.grey[700]))
+                            : Text(data[index].folderName,
+                                style: TextStyle(
+                                    color: Colors.grey[700], fontSize: 16)),
+                        data.length > 1 && data.length - index != 1
+                            ? Container(
+                                padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                child: FaIcon(FontAwesomeIcons.angleRight,
+                                    color: Colors.grey[700], size: 16))
+                            : Container()
+                      ])),
+                ));
+          }),
+    );
   }
 }
