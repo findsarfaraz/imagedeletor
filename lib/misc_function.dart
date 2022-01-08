@@ -3,7 +3,7 @@ class MiscFunction {
     try {
       final String reverse_path = path.split('').reversed.join();
       final String folder_name =
-          reverse_path.substring(1, reverse_path.indexOf('/'));
+          reverse_path.substring(0, reverse_path.indexOf('/'));
       // print(folder_name.split('').reversed.join());
       return folder_name.split('').reversed.join();
     } catch (e) {
@@ -16,7 +16,7 @@ class MiscFunction {
     try {
       if (path.indexOf('.') != -1) {
         final String reverse_path = path.split('').reversed.join();
-        folder_name = reverse_path.substring(1, reverse_path.indexOf('.'));
+        folder_name = reverse_path.substring(0, reverse_path.indexOf('.'));
         return folder_name.split('').reversed.join();
       } else {
         return 'unk';

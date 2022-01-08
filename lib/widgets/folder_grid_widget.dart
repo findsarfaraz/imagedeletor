@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imagedeletor/model/folder_list_model.dart';
 import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
+import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
 import 'package:intl/intl.dart' as intl;
 import 'dart:io' as io;
@@ -13,11 +14,14 @@ class FolderGridWidget extends StatefulHookConsumerWidget {
 }
 
 class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
+  // String sortType = '';
+  // String sortColumn = '';
+  // String filterColumn = '';
   @override
   Widget build(BuildContext context) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
 
-    final folderPath = ref.watch(folderPathProvier);
+    final folderPath = ref.watch(folderPathProvider);
     const monthList = [
       "Jan",
       "Feb",
@@ -32,10 +36,9 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
       "Nov",
       "Dec"
     ];
-    void browseDirectory(String path) async {
-      await ref.read(folderListAsyncProvider.notifier).fetch(path);
 
-      ref.read(folderPathProvier.state).state = path;
+    void browseDirectory(String path) async {
+      await ref.read(folderPathStateNotifierProvider.notifier).updatePath(path);
     }
 
     ;
@@ -93,13 +96,12 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
                   trailing: FaIcon(FontAwesomeIcons.ellipsisV,
                       color: Colors.black, size: 15)));
             }
-
             sliver_widget_map[SliverPersistentHeader(
                     key: ObjectKey('Date : ' +
                         startDate.month.toString() +
                         startDate.year.toString()),
                     delegate: RecordPersistentHeader(intl.toBeginningOfSentenceCase(
-                        "${monthList[startDate.month - 1]} - ${startDate.year.toString()}")!))] =
+                        "${monthList[startDate.month - 1]} ${startDate.year.toString()}")!))] =
                 SliverGrid(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2),
@@ -127,25 +129,31 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
         folder_list_data.whenOrNull(data: (data) {
           var x = data.where((element) => element.type == objectType);
 
-          if (x.length > 0) {}
           for (var i in x) {
-            new_list_widget.add(ListTile(
-                onTap: () {
-                  i.type == 'directory' ? browseDirectory(i.folderPath) : null;
-                },
-                key: ObjectKey(i.folderPath),
-                leading: objectType == "directory"
-                    ? FaIcon(
-                        FontAwesomeIcons.solidFolder,
-                        color: Colors.amber,
-                      )
-                    : FaIcon(
-                        FontAwesomeIcons.fileAlt,
-                        color: Colors.grey,
-                      ),
-                title: Text(i.folderFileName),
-                trailing: FaIcon(FontAwesomeIcons.ellipsisV,
-                    color: Colors.black, size: 15)));
+            new_list_widget.add(Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black38),
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: ListTile(
+                  onTap: () {
+                    i.type == 'directory'
+                        ? browseDirectory(i.folderPath)
+                        : null;
+                  },
+                  key: ObjectKey(i.folderPath),
+                  leading: objectType == "directory"
+                      ? FaIcon(
+                          FontAwesomeIcons.solidFolder,
+                          color: Colors.amber,
+                        )
+                      : FaIcon(
+                          FontAwesomeIcons.fileAlt,
+                          color: Colors.grey,
+                        ),
+                  title: Text(i.folderFileName),
+                  trailing: FaIcon(FontAwesomeIcons.ellipsisV,
+                      color: Colors.black, size: 15)),
+            ));
           }
 
           sliver_widget_map[SliverPersistentHeader(
@@ -153,12 +161,8 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
               delegate: RecordPersistentHeader(
                   intl.toBeginningOfSentenceCase(objectType)!))] = SliverGrid(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio:
-                      new_list_widget.length / (new_list_widget.length / 3),
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10),
-              delegate: SliverChildListDelegate(new_list_widget));
+                  crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
+              delegate: SliverChildListDelegate.fixed(new_list_widget));
         });
       });
     }
@@ -169,6 +173,7 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
     });
 
     return Container(
+      padding: EdgeInsets.all(5),
       color: Colors.white,
       child: CustomScrollView(
         slivers: widget_list,
@@ -187,6 +192,7 @@ class RecordPersistentHeader extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
         padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+        margin: EdgeInsets.fromLTRB(0, 0, 0, 6),
         alignment: Alignment.centerLeft,
         child: Text(title, style: Theme.of(context).textTheme.headline1),
         decoration: BoxDecoration(
