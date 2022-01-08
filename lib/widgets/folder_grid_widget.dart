@@ -130,31 +130,38 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
           var x = data.where((element) => element.type == objectType);
 
           for (var i in x) {
-            new_list_widget.add(ListTile(
-                onTap: () {
-                  i.type == 'directory' ? browseDirectory(i.folderPath) : null;
-                },
-                key: ObjectKey(i.folderPath),
-                leading: objectType == "directory"
-                    ? FaIcon(
-                        FontAwesomeIcons.solidFolder,
-                        color: Colors.amber,
-                      )
-                    : FaIcon(
-                        FontAwesomeIcons.fileAlt,
-                        color: Colors.grey,
-                      ),
-                title: Text(i.folderFileName),
-                trailing: FaIcon(FontAwesomeIcons.ellipsisV,
-                    color: Colors.black, size: 15)));
+            new_list_widget.add(Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black38),
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: ListTile(
+                  onTap: () {
+                    i.type == 'directory'
+                        ? browseDirectory(i.folderPath)
+                        : null;
+                  },
+                  key: ObjectKey(i.folderPath),
+                  leading: objectType == "directory"
+                      ? FaIcon(
+                          FontAwesomeIcons.solidFolder,
+                          color: Colors.amber,
+                        )
+                      : FaIcon(
+                          FontAwesomeIcons.fileAlt,
+                          color: Colors.grey,
+                        ),
+                  title: Text(i.folderFileName),
+                  trailing: FaIcon(FontAwesomeIcons.ellipsisV,
+                      color: Colors.black, size: 15)),
+            ));
           }
 
           sliver_widget_map[SliverPersistentHeader(
               key: ObjectKey(objectType),
               delegate: RecordPersistentHeader(
                   intl.toBeginningOfSentenceCase(objectType)!))] = SliverGrid(
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
               delegate: SliverChildListDelegate.fixed(new_list_widget));
         });
       });
@@ -166,6 +173,7 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
     });
 
     return Container(
+      padding: EdgeInsets.all(5),
       color: Colors.white,
       child: CustomScrollView(
         slivers: widget_list,
@@ -184,6 +192,7 @@ class RecordPersistentHeader extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
         padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+        margin: EdgeInsets.fromLTRB(0, 0, 0, 6),
         alignment: Alignment.centerLeft,
         child: Text(title, style: Theme.of(context).textTheme.headline1),
         decoration: BoxDecoration(
