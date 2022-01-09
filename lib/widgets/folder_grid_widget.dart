@@ -132,7 +132,7 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
           for (var i in x) {
             new_list_widget.add(Container(
               decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black38),
+                  border: Border.all(color: Colors.black26),
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: ListTile(
                   onTap: () {
