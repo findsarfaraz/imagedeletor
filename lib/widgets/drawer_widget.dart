@@ -35,8 +35,10 @@ class DrawerWidget extends ConsumerWidget {
                 //     .read(folderListAsyncProvider.notifier)
                 //     .fetch('/storage/emulated/0');
 
-                ref.read(folderPathStateProvider.state).state =
-                    '/storage/emulated/0';
+                await ref
+                    .read(folderPathStateNotifierProvider.notifier)
+                    .updatePath('/storage/emulated/0');
+
                 Navigator.of(context).pushNamed(FolderListScreen.routeName);
               },
               leading: FaIcon(FontAwesomeIcons.memory),

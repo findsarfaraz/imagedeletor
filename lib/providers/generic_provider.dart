@@ -12,6 +12,7 @@ final folderPathStateProvider = StateProvider<String>((ref) {
   final data = ref.watch(folderPathStateNotifierProvider);
 
   ref.watch(folderListAsyncProvider.notifier).fetch(data);
+
   ref
       .watch(folderTrackBackStateNotifierProvider.notifier)
       .modifyFolderBackTrack(data);

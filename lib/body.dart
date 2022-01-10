@@ -55,12 +55,19 @@ class BodyScreen extends ConsumerWidget {
                       .read(folderPathStateNotifierProvider.notifier)
                       .updatePath('/storage/emulated/0');
 
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      settings: RouteSettings(name: FolderListScreen.routeName),
-                      builder: (context) => FolderListScreen(),
-                    ),
-                  );
+                  // await ref
+                  //     .read(folderPathStateNotifierProvider.notifier)
+                  //     .updatePath(
+                  //         '/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/Whatsapp Images');
+
+                  Navigator.of(context).pushNamed(FolderListScreen.routeName);
+
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     settings: RouteSettings(name: FolderListScreen.routeName),
+                  //     builder: (context) => FolderListScreen(),
+                  //   ),
+                  // );
                 },
               )),
           Flexible(

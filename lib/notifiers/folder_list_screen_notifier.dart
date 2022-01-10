@@ -6,11 +6,13 @@ import 'package:riverpod/riverpod.dart';
 import '../misc_function.dart' as misc_func;
 
 class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
-  FolderListStateNotifier(ref) : super([]);
+  FolderListStateNotifier() : super([]);
 
   final func_list = misc_func.MiscFunction();
 
   Future<void> fetch(String path) async {
+    print("Started State Update ${DateTime.now()}");
+
     try {
       final folder_data = await io.Directory(path).list();
 
@@ -26,6 +28,7 @@ class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
     } catch (e) {
       print("Error: fetch : ${e.toString()}");
     }
+    print("Ended State Update ${DateTime.now()}");
   }
 
   Future<List<FolderListModel>> fetchStats(
