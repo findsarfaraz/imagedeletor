@@ -88,9 +88,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         title: Text('Picture Manager'),
         actions: [
           IconButton(
-              onPressed: () {
-                getInitialPermissionrResult();
-              },
+              onPressed: () {},
               icon: FaIcon(FontAwesomeIcons.batteryThreeQuarters, size: 20)),
           IconButton(
               onPressed: () {

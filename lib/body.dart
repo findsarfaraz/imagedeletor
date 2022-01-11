@@ -48,10 +48,10 @@ class BodyScreen extends ConsumerWidget {
                   child: DiskSpaceWidget(
                       'Internal Storage', Colors.red, state.sizeInfo),
                 ),
-                onTap: () async {
+                onTap: () {
                   // ref.read(folderPathStateProvider.state).state =
                   //     '/storage/emulated/0';
-                  await ref
+                  ref
                       .read(folderPathStateNotifierProvider.notifier)
                       .updatePath('/storage/emulated/0');
 

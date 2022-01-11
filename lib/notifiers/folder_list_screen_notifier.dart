@@ -16,13 +16,25 @@ class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
     try {
       final folder_data = await io.Directory(path).list();
 
-      final folder_list = await folder_data.toList();
+      // final folder_list = await folder_data.toList();
       List<FolderListModel> folderListFinal = [];
-      folderListFinal = await fetchStats(folder_list);
+      // folderListFinal = await fetchStats(folder_list);
 
-      folder_list.forEach((element) {
-        print(element.absolute);
-      });
+      await for (var folder in folder_data)
+        folderListFinal.add(FolderListModel(
+            accessDate: folder.statSync().accessed,
+            changeDate: folder.statSync().changed,
+            folderAbsolutePath: folder.absolute.toString(),
+            folderPath: folder.path,
+            folderFileName: func_list.get_folder_name(folder.path.toString()),
+            folderSize: folder.statSync().size.toDouble(),
+            fileExtension:
+                folder.statSync().type.toString().toLowerCase() == "file"
+                    ? func_list.get_file_extension(folder.path.toString())
+                    : '',
+            type: folder.statSync().type.toString(),
+            modifiedDate: folder.statSync().modified,
+            parentFolder: folder.parent.toString()));
 
       state = folderListFinal;
     } catch (e) {
@@ -31,34 +43,34 @@ class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
     print("Ended State Update ${DateTime.now()}");
   }
 
-  Future<List<FolderListModel>> fetchStats(
-      List<io.FileSystemEntity> folder_list) async {
-    List<FolderListModel> folderListFinal = [];
-    try {
-      io.FileStat fileStat;
-      for (var f in folder_list) {
-        fileStat = await f.statSync();
+  // Future<List<FolderListModel>> fetchStats(
+  //     List<io.FileSystemEntity> folder_list) async {
+  //   List<FolderListModel> folderListFinal = [];
+  //   try {
+  //     io.FileStat fileStat;
+  //     for (var f in folder_list) {
+  //       fileStat = await f.statSync();
 
-        folderListFinal.add(FolderListModel(
-            accessDate: fileStat.accessed,
-            changeDate: fileStat.changed,
-            folderAbsolutePath: f.absolute.toString(),
-            folderPath: f.path,
-            folderFileName: func_list.get_folder_name(f.path.toString()),
-            folderSize: fileStat.size.toDouble(),
-            fileExtension: fileStat.type.toString().toLowerCase() == "file"
-                ? func_list.get_file_extension(f.path.toString())
-                : '',
-            type: fileStat.type.toString(),
-            modifiedDate: fileStat.modified,
-            parentFolder: f.parent.toString()));
-      }
-    } catch (e) {
-      print("Error: fetch : ${e.toString()}");
-    }
+  //       folderListFinal.add(FolderListModel(
+  //           accessDate: fileStat.accessed,
+  //           changeDate: fileStat.changed,
+  //           folderAbsolutePath: f.absolute.toString(),
+  //           folderPath: f.path,
+  //           folderFileName: func_list.get_folder_name(f.path.toString()),
+  //           folderSize: fileStat.size.toDouble(),
+  //           fileExtension: fileStat.type.toString().toLowerCase() == "file"
+  //               ? func_list.get_file_extension(f.path.toString())
+  //               : '',
+  //           type: fileStat.type.toString(),
+  //           modifiedDate: fileStat.modified,
+  //           parentFolder: f.parent.toString()));
+  //     }
+  //   } catch (e) {
+  //     print("Error: fetch : ${e.toString()}");
+  //   }
 
-    return folderListFinal;
-  }
+  //   return folderListFinal;
+  // }
 
   void addNewFolder(String folderPath) async {
     try {

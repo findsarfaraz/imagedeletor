@@ -188,11 +188,16 @@ class FolderTrackBackWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(folderTrackBackProvider);
+    ScrollController _scrollController = ScrollController();
+    final Color colorVal = Color.fromARGB(255, 0, 0, 0);
 
+    // final max_position = _scrollController.position.maxScrollExtent;
+    // _scrollController.jumpTo(max_position);
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: ListView.builder(
           itemCount: data.length,
+          controller: _scrollController,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) {
             return Align(
@@ -212,7 +217,13 @@ class FolderTrackBackWidget extends ConsumerWidget {
                                     size: 18, color: Colors.grey[700]))
                             : Text(data[index].folderName,
                                 style: TextStyle(
-                                    color: Colors.grey[700], fontSize: 16)),
+                                    color: Color.fromARGB(
+                                        (255 / (index == 0 ? 1 : index))
+                                            .floor(),
+                                        0,
+                                        0,
+                                        0),
+                                    fontSize: 16)),
                         data.length > 1 && data.length - index != 1
                             ? Container(
                                 padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
