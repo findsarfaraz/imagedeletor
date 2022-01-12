@@ -13,18 +13,19 @@ class FolderGridWidget extends StatefulHookConsumerWidget {
   FolderGridWidgetState createState() => FolderGridWidgetState();
 }
 
-bool isLoading = false;
+// bool isLoading = false;
 
 class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
-  @override
   @override
   Widget build(BuildContext context) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
 
     // final folderPath = ref.watch(folderPathProvider);
-    ref.listen(folderListFutureProvider, (previous, next) {
-      isLoading = false;
-    });
+
+    final loadingState = ref.watch(folderLoadingStateProvider);
+    // ref.listen(folderListFutureProvider, (previous, next) {
+    //   isLoading = false;
+    // });
 
     const monthList = [
       "Jan",
@@ -75,31 +76,38 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
 
               if (x.length > 0) {
                 x.forEach((i) {
-                  new_list_widget.add(ListTile(
-                      onTap: () {
-                        i.type == 'directory'
-                            ? ref
-                                .read(folderPathStateNotifierProvider.notifier)
-                                .updatePath(i.folderPath)
-                            : null;
-
-                        setState(() {
-                          isLoading = true;
-                        });
-                      },
-                      key: ObjectKey(i.folderPath),
-                      leading: i.type == "directory"
-                          ? FaIcon(
-                              FontAwesomeIcons.solidFolder,
-                              color: Colors.amber,
-                            )
-                          : FaIcon(
-                              FontAwesomeIcons.fileAlt,
-                              color: Colors.grey,
-                            ),
-                      title: Text(i.folderFileName),
-                      trailing: FaIcon(FontAwesomeIcons.ellipsisV,
-                          color: Colors.black, size: 15)));
+                  new_list_widget.add(Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black26),
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: ListTile(
+                        onTap: () {
+                          i.type == 'directory'
+                              ? ref
+                                  .read(
+                                      folderPathStateNotifierProvider.notifier)
+                                  .updatePath(i.folderPath)
+                              : null;
+                          ref.read(folderLoadingStateProvider.state).state =
+                              true;
+                          // setState(() {
+                          //   isLoading = true;
+                          // });
+                        },
+                        key: ObjectKey(i.folderPath),
+                        leading: i.type == "directory"
+                            ? FaIcon(
+                                FontAwesomeIcons.solidFolder,
+                                color: Colors.amber,
+                              )
+                            : FaIcon(
+                                FontAwesomeIcons.fileAlt,
+                                color: Colors.grey,
+                              ),
+                        title: Text(i.folderFileName),
+                        trailing: FaIcon(FontAwesomeIcons.ellipsisV,
+                            color: Colors.black, size: 15)),
+                  ));
                 });
 
                 sliver_widget_map[SliverToBoxAdapter(
@@ -140,41 +148,34 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
               var x = data.where((element) => element.type == objectType);
               if (x.length > 0) {
                 x.forEach((i) {
-                  new_list_widget.add(Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black26),
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    child: ListTile(
-                        onTap: () async {
-                          print("function called");
-                          setState(() {
-                            isLoading = false;
-                          });
-                          i.type == 'directory'
-                              ? await ref
-                                  .read(
-                                      folderPathStateNotifierProvider.notifier)
-                                  .updatePath(i.folderPath)
-                              : null;
+                  new_list_widget.add(ListTile(
+                      onTap: () async {
+                        print("function called");
 
-                          setState(() {
-                            isLoading = true;
-                          });
-                        },
-                        key: ObjectKey(i.folderPath),
-                        leading: i.type == "directory"
-                            ? FaIcon(
-                                FontAwesomeIcons.solidFolder,
-                                color: Colors.amber,
-                              )
-                            : FaIcon(
-                                FontAwesomeIcons.fileAlt,
-                                color: Colors.grey,
-                              ),
-                        title: Text(i.folderFileName),
-                        trailing: FaIcon(FontAwesomeIcons.ellipsisV,
-                            color: Colors.black, size: 15)),
-                  ));
+                        i.type == 'directory'
+                            ? await ref
+                                .read(folderPathStateNotifierProvider.notifier)
+                                .updatePath(i.folderPath)
+                            : null;
+
+                        ref.read(folderLoadingStateProvider.state).state = true;
+                        // setState(() {
+                        //   isLoading = true;
+                        // });
+                      },
+                      key: ObjectKey(i.folderPath),
+                      leading: i.type == "directory"
+                          ? FaIcon(
+                              FontAwesomeIcons.solidFolder,
+                              color: Colors.amber,
+                            )
+                          : FaIcon(
+                              FontAwesomeIcons.fileAlt,
+                              color: Colors.grey,
+                            ),
+                      title: Text(i.folderFileName),
+                      trailing: FaIcon(FontAwesomeIcons.ellipsisV,
+                          color: Colors.black, size: 15)));
                 });
 
                 sliver_widget_map[SliverToBoxAdapter(
@@ -201,7 +202,7 @@ class FolderGridWidgetState extends ConsumerState<FolderGridWidget> {
             widget_list.add(value);
           });
 
-          return isLoading
+          return loadingState
               ? Center(child: CircularProgressIndicator())
               : Container(
                   color: Colors.white,
@@ -224,32 +225,3 @@ class FolderListBuilder extends StatelessWidget {
     return Container();
   }
 }
-
-// class RecordPersistentHeader extends SliverPersistentHeaderDelegate {
-//   const RecordPersistentHeader(this.title);
-
-//   final String title;
-
-//   @override
-//   Widget build(
-//       BuildContext context, double shrinkOffset, bool overlapsContent) {
-//     return Container(
-//         padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-//         alignment: Alignment.centerLeft,
-//         child: Text(title, style: Theme.of(context).textTheme.headline1),
-//         decoration: BoxDecoration(
-//             border:
-//                 Border(bottom: BorderSide(color: Colors.grey, width: 1.0))));
-//   }
-
-//   @override
-//   double get maxExtent => 40;
-
-//   @override
-//   double get minExtent => 40;
-
-//   @override
-//   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-//     return false;
-//   }
-// }

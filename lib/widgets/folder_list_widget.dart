@@ -6,25 +6,25 @@ import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
 import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
+import 'package:imagedeletor/widgets/popmenu_function_widget.dart';
 import 'package:intl/intl.dart' as intl;
 import 'dart:io' as io;
 
-class FolderListWidget extends StatefulHookConsumerWidget {
-  FolderListWidgetState createState() => FolderListWidgetState();
-}
+class FolderListWidget extends ConsumerWidget {
+// {
+//   FolderListWidgetState createState() => FolderListWidgetState();
+// }
 
-bool isLoading = false;
+// bool isLoading = false;
 
-class FolderListWidgetState extends ConsumerState<FolderListWidget> {
-  @override
-  @override
-  Widget build(BuildContext context) {
+// class FolderListWidgetState extends ConsumerState<FolderListWidget> {
+//   @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
 
     // final folderPath = ref.watch(folderPathProvider);
-    ref.listen(folderListFutureProvider, (previous, next) {
-      isLoading = false;
-    });
+
+    final loadingState = ref.watch(folderLoadingStateProvider);
 
     const monthList = [
       "Jan",
@@ -82,10 +82,10 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
                                 .read(folderPathStateNotifierProvider.notifier)
                                 .updatePath(i.folderPath)
                             : null;
-
-                        setState(() {
-                          isLoading = true;
-                        });
+                        ref.read(folderLoadingStateProvider.state).state = true;
+                        // setState(() {
+                        //   isLoading = true;
+                        // });
                       },
                       key: ObjectKey(i.folderPath),
                       leading: i.type == "directory"
@@ -141,18 +141,17 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
                   new_list_widget.add(ListTile(
                       onTap: () async {
                         print("function called");
-                        setState(() {
-                          isLoading = false;
-                        });
+
                         i.type == 'directory'
                             ? await ref
                                 .read(folderPathStateNotifierProvider.notifier)
                                 .updatePath(i.folderPath)
                             : null;
 
-                        setState(() {
-                          isLoading = true;
-                        });
+                        ref.read(folderLoadingStateProvider.state).state = true;
+                        // setState(() {
+                        //   isLoading = true;
+                        // });
                       },
                       key: ObjectKey(i.folderPath),
                       leading: i.type == "directory"
@@ -165,8 +164,7 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
                               color: Colors.grey,
                             ),
                       title: Text(i.folderFileName),
-                      trailing: FaIcon(FontAwesomeIcons.ellipsisV,
-                          color: Colors.black, size: 15)));
+                      trailing: PopupMenuFunctionWidget(i.folderPath, i.type)));
                 });
 
                 sliver_widget_map[SliverToBoxAdapter(
@@ -191,7 +189,7 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
             widget_list.add(value);
           });
 
-          return isLoading
+          return loadingState
               ? Center(child: CircularProgressIndicator())
               : Container(
                   color: Colors.white,
@@ -214,32 +212,3 @@ class FolderListBuilder extends StatelessWidget {
     return Container();
   }
 }
-
-// class RecordPersistentHeader extends SliverPersistentHeaderDelegate {
-//   const RecordPersistentHeader(this.title);
-
-//   final String title;
-
-//   @override
-//   Widget build(
-//       BuildContext context, double shrinkOffset, bool overlapsContent) {
-//     return Container(
-//         padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-//         alignment: Alignment.centerLeft,
-//         child: Text(title, style: Theme.of(context).textTheme.headline1),
-//         decoration: BoxDecoration(
-//             border:
-//                 Border(bottom: BorderSide(color: Colors.grey, width: 1.0))));
-//   }
-
-//   @override
-//   double get maxExtent => 40;
-
-//   @override
-//   double get minExtent => 40;
-
-//   @override
-//   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-//     return false;
-//   }
-// }

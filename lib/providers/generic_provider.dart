@@ -5,15 +5,15 @@ import 'package:riverpod/riverpod.dart';
 
 final folderPathStateNotifierProvider =
     StateNotifierProvider<FolderPath, String>((ref) {
-  return FolderPath();
+  return FolderPath(ref);
 });
 
 final folderPathStateProvider = StateProvider<String>((ref) {
   final data = ref.watch(folderPathStateNotifierProvider);
 
-  ref
-      .watch(folderTrackBackStateNotifierProvider.notifier)
-      .modifyFolderBackTrack(data);
+  // ref
+  //     .watch(folderTrackBackStateNotifierProvider.notifier)
+  //     .modifyFolderBackTrack(data);
 
   ref.watch(folderListAsyncProvider.notifier).fetch(data);
 

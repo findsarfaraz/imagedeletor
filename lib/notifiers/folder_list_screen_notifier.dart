@@ -75,7 +75,7 @@ class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
   void addNewFolder(String folderPath) async {
     try {
       final newDir = io.Directory(folderPath);
-      await io.File(folderPath).create(recursive: true);
+      await io.Directory(folderPath).create(recursive: true);
 
       final fileStat = newDir.statSync();
       final folderModel = FolderListModel(
@@ -115,6 +115,26 @@ class FolderListStateNotifier extends StateNotifier<List<FolderListModel>> {
           type: fileStat.type.toString());
 
       state = [...state, folderModel];
+    } catch (e) {
+      print("Error: addNewFile: ${e.toString()}");
+    }
+  }
+
+  void deleteFileFolder(String filePath, String type) async {
+    try {
+      final folderList = state;
+      final delFileSystemEntity =
+          folderList.where((element) => element.folderPath == filePath).first;
+      if (type.toLowerCase() == "file") {
+        io.File(delFileSystemEntity.folderPath).delete();
+      } else if (type.toLowerCase() == "directory") {
+        io.Directory(delFileSystemEntity.folderPath).delete(recursive: true);
+        print("delete ran");
+      }
+
+      folderList.removeAt(state.indexOf(delFileSystemEntity));
+
+      state = [...folderList];
     } catch (e) {
       print("Error: addNewFile: ${e.toString()}");
     }

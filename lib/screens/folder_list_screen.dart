@@ -44,8 +44,6 @@ class FolderListScreen extends HookConsumerWidget {
 
     final providerMenuSettings = ref.watch(folderSettingNotifierProvider);
 
-    final folderPath = ref.watch(folderPathStateProvider.state).state;
-
     void closeMenu(AnimationController animationController) {
       isMenuOpen = !isMenuOpen;
       animationController.reverse().whenComplete(() => _overlayEntry.remove());
@@ -188,16 +186,14 @@ class FolderTrackBackWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(folderTrackBackProvider);
-    ScrollController _scrollController = ScrollController();
-    final Color colorVal = Color.fromARGB(255, 0, 0, 0);
 
     // final max_position = _scrollController.position.maxScrollExtent;
     // _scrollController.jumpTo(max_position);
     return Container(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: ListView.builder(
+          shrinkWrap: true,
           itemCount: data.length,
-          controller: _scrollController,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) {
             return Align(
@@ -218,7 +214,10 @@ class FolderTrackBackWidget extends ConsumerWidget {
                             : Text(data[index].folderName,
                                 style: TextStyle(
                                     color: Color.fromARGB(
-                                        (255 / (index == 0 ? 1 : index))
+                                        (255 /
+                                                (index == 0 && data.length > 0
+                                                    ? 1
+                                                    : data.length - index))
                                             .floor(),
                                         0,
                                         0,
