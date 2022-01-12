@@ -12,6 +12,7 @@ import 'package:imagedeletor/providers/generic_provider.dart';
 import 'package:imagedeletor/widgets/drawer_widget.dart';
 import 'package:imagedeletor/widgets/folder_grid_widget.dart';
 import 'package:imagedeletor/widgets/folder_list_widget.dart';
+import 'package:imagedeletor/widgets/folder_trackback_widget.dart';
 import 'package:imagedeletor/widgets/popup_menu_widget.dart';
 import 'package:imagedeletor/widgets/screen_pop_menu_widget.dart';
 
@@ -177,61 +178,5 @@ class FolderListScreen extends HookConsumerWidget {
               aniController: animationController,
               isMenuOpen: isMenuOpen);
     });
-  }
-}
-
-class FolderTrackBackWidget extends ConsumerWidget {
-  const FolderTrackBackWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = ref.watch(folderTrackBackProvider);
-
-    // final max_position = _scrollController.position.maxScrollExtent;
-    // _scrollController.jumpTo(max_position);
-    return Container(
-      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-      child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: data.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (BuildContext context, int index) {
-            return Align(
-                alignment: Alignment.centerLeft,
-                child: InkWell(
-                  onTap: () async {
-                    await ref
-                        .read(folderPathStateNotifierProvider.notifier)
-                        .updatePath(data[index].folderPath);
-                  },
-                  child: Container(
-                      padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
-                      child: Row(children: [
-                        (index == 0 && data[index].folderName == "0")
-                            ? Container(
-                                child: FaIcon(FontAwesomeIcons.mobileAlt,
-                                    size: 18, color: Colors.grey[700]))
-                            : Text(data[index].folderName,
-                                style: TextStyle(
-                                    color: Color.fromARGB(
-                                        (255 /
-                                                (index == 0 && data.length > 0
-                                                    ? 1
-                                                    : data.length - index))
-                                            .floor(),
-                                        0,
-                                        0,
-                                        0),
-                                    fontSize: 16)),
-                        data.length > 1 && data.length - index != 1
-                            ? Container(
-                                padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
-                                child: FaIcon(FontAwesomeIcons.angleRight,
-                                    color: Colors.grey[700], size: 16))
-                            : Container()
-                      ])),
-                ));
-          }),
-    );
   }
 }
