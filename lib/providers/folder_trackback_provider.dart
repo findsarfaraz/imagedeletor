@@ -8,13 +8,13 @@ final folderTrackBackStateNotifierProvider =
   return FolderTrackBackNotifier();
 });
 
-final folderTrackBackProvider = StateProvider((ref) {
+final folderTrackBackStateProvider = StateProvider((ref) {
   final data = ref.watch(folderTrackBackStateNotifierProvider);
 
   return data;
 });
 
-final folderTrackBackFutureProvider = FutureProvider((ref) async {
-  final data = await ref.watch(folderTrackBackProvider);
+final folderTrackBackProvider = Provider((ref) {
+  final data = ref.watch(folderTrackBackStateProvider);
   return data;
 });

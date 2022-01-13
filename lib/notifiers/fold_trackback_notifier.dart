@@ -8,7 +8,7 @@ class FolderTrackBackNotifier
   FolderTrackBackNotifier() : super([]);
   final func_list = MiscFunction();
 
-  Future<void> modifyFolderBackTrack(String folderPath) async {
+  void modifyFolderBackTrack(String folderPath) async {
     List<FolderTrackBackModel> folderTrackBackModelList;
 
     folderTrackBackModelList = state;
@@ -27,11 +27,10 @@ class FolderTrackBackNotifier
         folderTrackBackModelList.add(FolderTrackBackModel(
             folderName: folderName, folderPath: folderPath));
       }
+      state = [...folderTrackBackModelList];
     } catch (e) {
       print("ERROR: modifyFolderBackTrack ${e.toString()}");
     }
-
-    state = folderTrackBackModelList;
   }
 
   void removeFolderPath(String path) {

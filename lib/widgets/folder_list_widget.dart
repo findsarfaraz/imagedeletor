@@ -6,19 +6,25 @@ import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
 import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
+import 'package:imagedeletor/widgets/popmenu_function_widget.dart';
 import 'package:intl/intl.dart' as intl;
 import 'dart:io' as io;
 
-class FolderListWidget extends StatefulHookConsumerWidget {
-  FolderListWidgetState createState() => FolderListWidgetState();
-}
+class FolderListWidget extends ConsumerWidget {
+// {
+//   FolderListWidgetState createState() => FolderListWidgetState();
+// }
 
-class FolderListWidgetState extends ConsumerState<FolderListWidget> {
-  @override
-  Widget build(BuildContext context) {
+// bool isLoading = false;
+
+// class FolderListWidgetState extends ConsumerState<FolderListWidget> {
+//   @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
 
-    final folderPath = ref.watch(folderPathProvider);
+    // final folderPath = ref.watch(folderPathProvider);
+
+    final loadingState = ref.watch(folderLoadingStateProvider);
 
     const monthList = [
       "Jan",
@@ -35,164 +41,174 @@ class FolderListWidgetState extends ConsumerState<FolderListWidget> {
       "Dec"
     ];
 
-    void browseDirectory(String path) async {
-      await ref.read(folderPathStateNotifierProvider.notifier).updatePath(path);
-    }
-
     AsyncValue<List<FolderListModel>> folder_list_data =
         ref.watch(folderListFutureProvider);
 
-    Map<SliverPersistentHeader, SliverList> sliver_widget_map = {};
+    Map<SliverToBoxAdapter, SliverList> sliver_widget_map = {};
     List<Widget> widget_list = [];
     List<String> distinct_type = [];
-    return Container(
-        child: folder_list_data.when(data: (data) {
-      if (menuSettings[5] != '0') {
-        int startMonth;
-        int endMonth;
-        int startYear;
-        int endYear;
 
-        startMonth = data.first.modifiedDate.month;
-        startYear = data.first.modifiedDate.year;
-        endMonth = data.last.modifiedDate.month;
-        endYear = data.last.modifiedDate.year;
+    return folder_list_data.when(
+        data: (data) {
+          if (menuSettings[5] != '0') {
+            int startMonth;
+            int endMonth;
+            int startYear;
+            int endYear;
 
-        var startDate = DateTime(startYear, startMonth, 1);
-        var endDate = DateTime(endYear, endMonth + 1, 1);
+            startMonth = data.first.modifiedDate.month;
+            startYear = data.first.modifiedDate.year;
+            endMonth = data.last.modifiedDate.month;
+            endYear = data.last.modifiedDate.year;
 
-        while (startDate.difference(endDate).inMicroseconds != 0) {
-          List<Widget> new_list_widget = [];
+            var startDate = DateTime(startYear, startMonth, 1);
+            var endDate = DateTime(endYear, endMonth + 1, 1);
 
-          var x = data
-              .where((element) =>
-                  element.modifiedDate.month == startDate.month &&
-                  element.modifiedDate.year == startDate.year)
-              .toList();
+            while (startDate.difference(endDate).inMicroseconds != 0) {
+              List<Widget> new_list_widget = [];
 
-          if (x.length > 0) {
-            x.forEach((i) {
-              new_list_widget.add(ListTile(
-                  onTap: () {
-                    i.type == 'directory'
-                        ? browseDirectory(i.folderPath)
-                        : null;
-                  },
-                  key: ObjectKey(i.folderPath),
-                  leading: i.type == "directory"
-                      ? FaIcon(
-                          FontAwesomeIcons.solidFolder,
-                          color: Colors.amber,
-                        )
-                      : FaIcon(
-                          FontAwesomeIcons.fileAlt,
-                          color: Colors.grey,
-                        ),
-                  title: Text(i.folderFileName),
-                  trailing: FaIcon(FontAwesomeIcons.ellipsisV,
-                      color: Colors.black, size: 15)));
-            });
+              var x = data
+                  .where((element) =>
+                      element.modifiedDate.month == startDate.month &&
+                      element.modifiedDate.year == startDate.year)
+                  .toList();
 
-            sliver_widget_map[SliverPersistentHeader(
+              if (x.length > 0) {
+                x.forEach((i) {
+                  new_list_widget.add(ListTile(
+                      onTap: () {
+                        i.type == 'directory'
+                            ? ref
+                                .read(folderPathStateNotifierProvider.notifier)
+                                .updatePath(i.folderPath)
+                            : null;
+                        ref.read(folderLoadingStateProvider.state).state = true;
+                        // setState(() {
+                        //   isLoading = true;
+                        // });
+                      },
+                      key: ObjectKey(i.folderPath),
+                      leading: i.type == "directory"
+                          ? FaIcon(
+                              FontAwesomeIcons.solidFolder,
+                              color: Colors.amber,
+                            )
+                          : FaIcon(
+                              FontAwesomeIcons.fileAlt,
+                              color: Colors.grey,
+                            ),
+                      title: Text(i.folderFileName),
+                      trailing: FaIcon(FontAwesomeIcons.ellipsisV,
+                          color: Colors.black, size: 15)));
+                });
+
+                sliver_widget_map[SliverToBoxAdapter(
                     key: ObjectKey('Date : ' +
                         startDate.month.toString() +
                         startDate.year.toString()),
-                    delegate: RecordPersistentHeader(intl.toBeginningOfSentenceCase(
-                        "${monthList[startDate.month - 1]} ${startDate.year.toString()}")!))] =
-                SliverList(
+                    child: Container(
+                        padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        height: 50,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                            "${intl.toBeginningOfSentenceCase(monthList[startDate.month - 1].toString())} -  ${startDate.year.toString()}",
+                            style: Theme.of(context).textTheme.headline1),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.grey,
+                                    width: 1.0)))))] = SliverList(
                     delegate: SliverChildListDelegate.fixed(new_list_widget));
-          }
+              }
 
-          menuSettings[5] == "1"
-              ? startDate = DateTime(startDate.year, startDate.month + 1, 1)
-              : startDate = DateTime(startDate.year, startDate.month - 1, 1);
-        }
-      } else {
-        data.forEach((eachData) {
-          if (!distinct_type.contains(eachData.type)) {
-            distinct_type.add(eachData.type);
-          }
-        });
-        distinct_type.sort();
-
-        distinct_type.forEach((objectType) {
-          List<Widget> new_list_widget = [];
-          var x = data.where((element) => element.type == objectType);
-          if (x.length > 0) {
-            x.forEach((i) {
-              new_list_widget.add(ListTile(
-                  onTap: () {
-                    i.type == 'directory'
-                        ? browseDirectory(i.folderPath)
-                        : null;
-                  },
-                  key: ObjectKey(i.folderPath),
-                  leading: i.type == "directory"
-                      ? FaIcon(
-                          FontAwesomeIcons.solidFolder,
-                          color: Colors.amber,
-                        )
-                      : FaIcon(
-                          FontAwesomeIcons.fileAlt,
-                          color: Colors.grey,
-                        ),
-                  title: Text(i.folderFileName),
-                  trailing: FaIcon(FontAwesomeIcons.ellipsisV,
-                      color: Colors.black, size: 15)));
+              menuSettings[5] == "1"
+                  ? startDate = DateTime(startDate.year, startDate.month + 1, 1)
+                  : startDate =
+                      DateTime(startDate.year, startDate.month - 1, 1);
+            }
+          } else {
+            data.forEach((eachData) {
+              if (!distinct_type.contains(eachData.type)) {
+                distinct_type.add(eachData.type);
+              }
             });
+            distinct_type.sort();
+            distinct_type.forEach((objectType) {
+              List<Widget> new_list_widget = [];
+              var x = data.where((element) => element.type == objectType);
+              if (x.length > 0) {
+                x.forEach((i) {
+                  new_list_widget.add(ListTile(
+                      onTap: () async {
+                        print("function called");
 
-            sliver_widget_map[SliverPersistentHeader(
-                key: ObjectKey(objectType),
-                delegate: RecordPersistentHeader(
-                    intl.toBeginningOfSentenceCase(objectType)!))] = SliverList(
-                delegate: SliverChildListDelegate.fixed(new_list_widget));
+                        i.type == 'directory'
+                            ? await ref
+                                .read(folderPathStateNotifierProvider.notifier)
+                                .updatePath(i.folderPath)
+                            : null;
+
+                        ref.read(folderLoadingStateProvider.state).state = true;
+                        // setState(() {
+                        //   isLoading = true;
+                        // });
+                      },
+                      key: ObjectKey(i.folderPath),
+                      leading: i.type == "directory"
+                          ? FaIcon(
+                              FontAwesomeIcons.solidFolder,
+                              color: Colors.amber,
+                            )
+                          : FaIcon(
+                              FontAwesomeIcons.fileAlt,
+                              color: Colors.grey,
+                            ),
+                      title: Text(i.folderFileName),
+                      trailing: PopupMenuFunctionWidget(i.folderPath, i.type)));
+                });
+
+                sliver_widget_map[SliverToBoxAdapter(
+                    key: ObjectKey(objectType),
+                    child: Container(
+                        padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                        height: 50,
+                        alignment: Alignment.centerLeft,
+                        child: Text(intl.toBeginningOfSentenceCase(objectType)!,
+                            style: Theme.of(context).textTheme.headline1),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.grey,
+                                    width: 1.0)))))] = SliverList(
+                    delegate: SliverChildListDelegate.fixed(new_list_widget));
+              }
+            });
           }
-        });
+          sliver_widget_map.forEach((key, value) {
+            widget_list.add(key);
+            widget_list.add(value);
+          });
 
-        sliver_widget_map.forEach((key, value) {
-          widget_list.add(key);
-          widget_list.add(value);
-        });
-      }
-
-      return Container(
-          color: Colors.white,
-          child: CustomScrollView(
-            slivers: widget_list,
-          ));
-    }, error: (err, st) {
-      return Center(child: Text(err.toString()));
-    }, loading: () {
-      return Center(child: CircularProgressIndicator());
-    }));
+          return loadingState
+              ? Center(child: CircularProgressIndicator())
+              : Container(
+                  color: Colors.white,
+                  child: CustomScrollView(
+                    slivers: widget_list,
+                  ));
+        },
+        error: (err, st) {
+          return Center(child: Text(err.toString()));
+        },
+        loading: () => Center(child: CircularProgressIndicator()));
   }
 }
 
-class RecordPersistentHeader extends SliverPersistentHeaderDelegate {
-  const RecordPersistentHeader(this.title);
-
-  final String title;
+class FolderListBuilder extends StatelessWidget {
+  const FolderListBuilder({Key? key}) : super(key: key);
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-        padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-        alignment: Alignment.centerLeft,
-        child: Text(title, style: Theme.of(context).textTheme.headline1),
-        decoration: BoxDecoration(
-            border:
-                Border(bottom: BorderSide(color: Colors.grey, width: 1.0))));
-  }
-
-  @override
-  double get maxExtent => 40;
-
-  @override
-  double get minExtent => 40;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
