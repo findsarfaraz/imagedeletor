@@ -11,12 +11,23 @@ class FolderTrackBackWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final data1 = ref.watch(folderTrackBackProvider);
 
+    ScrollController scrollController = ScrollController();
+
+    ref.listen(folderTrackBackProvider, (previous, next) {
+      print("Ran listen");
+      scrollController.animateTo(
+          scrollController.position.maxScrollExtent + 100,
+          duration: Duration(milliseconds: 50),
+          curve: Curves.easeInOut);
+    });
+
     return Container(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: ListView.builder(
           shrinkWrap: true,
           itemCount: data1.length,
           scrollDirection: Axis.horizontal,
+          controller: scrollController,
           itemBuilder: (BuildContext context, int index) {
             return Align(
                 alignment: Alignment.centerLeft,

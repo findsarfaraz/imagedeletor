@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:imagedeletor/misc_function.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
 import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
@@ -15,6 +16,8 @@ import 'package:imagedeletor/widgets/folder_list_widget.dart';
 import 'package:imagedeletor/widgets/folder_trackback_widget.dart';
 import 'package:imagedeletor/widgets/popup_menu_widget.dart';
 import 'package:imagedeletor/widgets/screen_pop_menu_widget.dart';
+
+final func_list = MiscFunction();
 
 class FolderListScreen extends HookConsumerWidget {
   static const routeName = '/folderlistscreen';
@@ -89,7 +92,7 @@ class FolderListScreen extends HookConsumerWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  func_list.copyFile();
                 },
                 icon: Icon(
                   Icons.ac_unit,

@@ -1,3 +1,7 @@
+import 'dart:io' as io;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 class MiscFunction {
   String get_folder_name(String path) {
     try {
@@ -24,6 +28,16 @@ class MiscFunction {
     } catch (e) {
       print("ERROR GET_FILE_EXTENSION: ${e.toString()} ");
       return "ERROR GET_FILE_EXTENSION: ${e.toString()} ";
+    }
+  }
+
+  void copyFile() async {
+    try {
+      final newFile = io.File("storage/emulated/0/Documents/second.txt");
+
+      newFile.copy("storage/emulated/0/Documents/second.txt");
+    } catch (e) {
+      print("ERROR : ${e.toString()}");
     }
   }
 }
