@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:imagedeletor/providers/favorite_folder_provider.dart';
-import 'package:imagedeletor/providers/folder_list_provider.dart';
-import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
 import 'package:imagedeletor/screens/folder_list_screen.dart';
 import 'package:imagedeletor/state_manager/folder_screen_state.dart';
