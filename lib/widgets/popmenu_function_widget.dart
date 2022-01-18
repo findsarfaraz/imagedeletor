@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:imagedeletor/providers/folder_copy_paste_function_provider.dart';
 
 import 'dart:io' as io;
 
 import 'package:imagedeletor/providers/folder_list_provider.dart';
+import 'package:imagedeletor/providers/generic_provider.dart';
 
 class PopupMenuFunctionWidget extends ConsumerWidget {
   String path;
@@ -15,9 +17,9 @@ class PopupMenuFunctionWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return PopupMenuButton(
         onSelected: (value) {
+          bool confirmation = false;
           if (value == 7) {
             if (type.toLowerCase() == "directory") {
-              bool confirmation = false;
               TextButton yesButton = TextButton(
                   onPressed: () {
                     ref
@@ -45,6 +47,15 @@ class PopupMenuFunctionWidget extends ConsumerWidget {
                   .read(folderListAsyncProvider.notifier)
                   .deleteFileFolder(path, type);
             }
+          } else if (value == 6) {
+            io.FileSystemEntity fileSystemEntity;
+            final folderPath = ref.read(folderPathStateProvider);
+            if (type == "file") {
+              fileSystemEntity = io.File(path);
+            } else {
+              fileSystemEntity = io.Directory(path);
+            }
+            ref.read(folderCopyStateProvider.state).state = fileSystemEntity;
           }
         },
         itemBuilder: (context) => [
