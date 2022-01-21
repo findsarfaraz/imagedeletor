@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imagedeletor/misc_function.dart';
 import 'package:imagedeletor/providers/folder_copy_paste_function_provider.dart';
-import 'package:imagedeletor/providers/folder_list_provider_oldtest.dart';
+import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
 import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
@@ -130,8 +130,6 @@ class FolderListScreen extends HookConsumerWidget {
               )),
           PopupMenuButton(
               onSelected: (value) {
-                print(value.toString());
-
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -178,15 +176,15 @@ class FolderListScreen extends HookConsumerWidget {
             // FolderGridWidget(),
             ),
       ]),
-      floatingActionButton: Visibility(
-        visible: !(copiedData.path == "storage/emulated/0"),
-        child: FloatingActionButton(
-          onPressed: () {
-            print(copiedData.path);
-          },
-          child: FaIcon(FontAwesomeIcons.paste),
-        ),
-      ),
+      // floatingActionButton: Visibility(
+      //   visible: !(copiedData.path == "storage/emulated/0"),
+      //   child: FloatingActionButton(
+      //     onPressed: () {
+      //       print(copiedData.path);
+      //     },
+      //     child: FaIcon(FontAwesomeIcons.paste),
+      //   ),
+      // ),
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imagedeletor/providers/folder_copy_paste_function_provider.dart';
 
 import 'dart:io' as io;
+import 'package:path/path.dart' as p;
 
 import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
@@ -15,38 +16,42 @@ class PopupMenuFunctionWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final folderName = p.basename(path);
+
+    void deleteFileFolder() {
+      final yesButton = TextButton(
+        child: Text("Yes"),
+        onPressed: () {
+          ref
+              .read(folderListAsyncProvider.notifier)
+              .deleteFileFolder(path, type);
+          Navigator.pop(context);
+        },
+      );
+      final noButton = TextButton(
+          child: Text("No"),
+          onPressed: () {
+            Navigator.pop(context);
+          });
+
+      final alert = AlertDialog(
+        actions: [yesButton, noButton],
+        title: Text("Delete Confirmation"),
+        content: Text(
+            "Do you want to delete ${type == "file" ? "file" : "folder"} ${folderName}?"),
+      );
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          });
+    }
+
     return PopupMenuButton(
         onSelected: (value) {
           bool confirmation = false;
           if (value == 7) {
-            if (type.toLowerCase() == "directory") {
-              TextButton yesButton = TextButton(
-                  onPressed: () {
-                    ref
-                        .read(folderListAsyncProvider.notifier)
-                        .deleteFileFolder(path, type);
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("Yes"));
-              TextButton noButton = TextButton(
-                  onPressed: () {
-                    confirmation = false;
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("No`"));
-              AlertDialog alert = AlertDialog(
-                  actions: [yesButton, noButton],
-                  title: Text("Do you want to delete"));
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return alert;
-                  });
-            } else if (type.toLowerCase() == "file") {
-              ref
-                  .read(folderListAsyncProvider.notifier)
-                  .deleteFileFolder(path, type);
-            }
+            deleteFileFolder();
           } else if (value == 6) {
             io.FileSystemEntity fileSystemEntity;
             final folderPath = ref.read(folderPathStateProvider);

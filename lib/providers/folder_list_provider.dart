@@ -17,107 +17,107 @@ final folderListAsyncProvider = StateNotifierProvider<FolderListStateNotifier,
 
 final folderStateProvider =
     StateProvider<AsyncValue<List<FolderListModel>>>((ref) {
-  AsyncValue<List<FolderListModel>> requireData =
-      ref.watch(folderListAsyncProvider);
-  // AsyncValue<List<FolderListModel>> filterData;
-
   // AsyncValue<List<FolderListModel>> requireData =
   //     ref.watch(folderListAsyncProvider);
-  // final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
-  // final filterList = ref.watch(providerFilterListProvider).filterList;
+  AsyncValue<List<FolderListModel>> filterData;
 
-  // if (menuSettings[2] == '1') {
-  //   requireData.whenData((value) {
-  //     value.sort((a, b) {
-  //       return a.folderFileName
-  //           .toString()
-  //           .toLowerCase()
-  //           .compareTo(b.folderFileName.toString().toLowerCase());
-  //     });
-  //   });
-  // } else if (menuSettings[2] == '2') {
-  //   requireData.whenData((value) {
-  //     value.sort((a, b) {
-  //       return b.folderFileName
-  //           .toString()
-  //           .toLowerCase()
-  //           .compareTo(a.folderFileName.toString().toLowerCase());
-  //     });
-  //   });
-  // } else if (menuSettings[3] == '1') {
-  //   requireData.whenData((value) {
-  //     value.sort((a, b) {
-  //       return a.folderSize.compareTo(b.folderSize);
-  //     });
-  //   });
-  // } else if (menuSettings[3] == '2') {
-  //   requireData.whenData((value) {
-  //     value.sort((a, b) {
-  //       return b.folderSize.compareTo(a.folderSize);
-  //     });
-  //   });
-  // } else if (menuSettings[4] == '1') {
-  //   requireData.whenData((value) {
-  //     value.sort((a, b) {
-  //       return a.fileExtension
-  //           .toString()
-  //           .toLowerCase()
-  //           .compareTo(b.fileExtension.toString().toLowerCase());
-  //     });
-  //   });
-  // } else if (menuSettings[4] == '2') {
-  //   requireData.whenData((value) {
-  //     value.sort((a, b) {
-  //       return b.fileExtension
-  //           .toString()
-  //           .toLowerCase()
-  //           .compareTo(a.fileExtension.toString().toLowerCase());
-  //     });
-  //   });
-  // } else if (menuSettings[5] == '1') {
-  //   requireData.whenData((value) {
-  //     value.sort((a, b) {
-  //       return a.modifiedDate.compareTo(b.modifiedDate);
-  //     });
-  //   });
-  // } else if (menuSettings[5] == '2') {
-  //   requireData.whenData((value) {
-  //     value.sort((a, b) {
-  //       return b.modifiedDate.compareTo(a.modifiedDate);
-  //     });
-  //   });
-  // }
+  AsyncValue<List<FolderListModel>> requireData =
+      ref.watch(folderListAsyncProvider);
+  final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
+  final filterList = ref.watch(providerFilterListProvider).filterList;
 
-  // if (menuSettings[7] == '1') {
-  //   filterData = requireData.whenData((value) => value
-  //       .where((element) => ((filterList['picture']!)
-  //               .contains(element.fileExtension.toLowerCase()) ||
-  //           (element.type == "directory")))
-  //       .toList());
-  // } else if (menuSettings[8] == '1') {
-  //   filterData = requireData.whenData((value) => value
-  //       .where((element) => ((filterList['video']!)
-  //               .contains(element.fileExtension.toLowerCase()) ||
-  //           (element.type == "directory")))
-  //       .toList());
-  // } else if (menuSettings[9] == '1') {
-  //   filterData = requireData.whenData((value) => value
-  //       .where((element) => ((filterList['document']!)
-  //               .contains(element.fileExtension.toLowerCase()) ||
-  //           (element.type == "directory")))
-  //       .toList());
-  // } else if (menuSettings[10] == '1') {
-  //   filterData = requireData.whenData((value) => value
-  //       .where((element) => ((filterList['music']!)
-  //               .contains(element.fileExtension.toLowerCase()) ||
-  //           (element.type == "directory")))
-  //       .toList());
-  // } else {
-  //   filterData = requireData;
-  // }
-  // return filterData;
+  if (menuSettings[2] == '1') {
+    requireData.whenData((value) {
+      value.sort((a, b) {
+        return a.folderFileName
+            .toString()
+            .toLowerCase()
+            .compareTo(b.folderFileName.toString().toLowerCase());
+      });
+    });
+  } else if (menuSettings[2] == '2') {
+    requireData.whenData((value) {
+      value.sort((a, b) {
+        return b.folderFileName
+            .toString()
+            .toLowerCase()
+            .compareTo(a.folderFileName.toString().toLowerCase());
+      });
+    });
+  } else if (menuSettings[3] == '1') {
+    requireData.whenData((value) {
+      value.sort((a, b) {
+        return a.folderSize.compareTo(b.folderSize);
+      });
+    });
+  } else if (menuSettings[3] == '2') {
+    requireData.whenData((value) {
+      value.sort((a, b) {
+        return b.folderSize.compareTo(a.folderSize);
+      });
+    });
+  } else if (menuSettings[4] == '1') {
+    requireData.whenData((value) {
+      value.sort((a, b) {
+        return a.fileExtension
+            .toString()
+            .toLowerCase()
+            .compareTo(b.fileExtension.toString().toLowerCase());
+      });
+    });
+  } else if (menuSettings[4] == '2') {
+    requireData.whenData((value) {
+      value.sort((a, b) {
+        return b.fileExtension
+            .toString()
+            .toLowerCase()
+            .compareTo(a.fileExtension.toString().toLowerCase());
+      });
+    });
+  } else if (menuSettings[5] == '1') {
+    requireData.whenData((value) {
+      value.sort((a, b) {
+        return a.modifiedDate.compareTo(b.modifiedDate);
+      });
+    });
+  } else if (menuSettings[5] == '2') {
+    requireData.whenData((value) {
+      value.sort((a, b) {
+        return b.modifiedDate.compareTo(a.modifiedDate);
+      });
+    });
+  }
 
-  return requireData;
+  if (menuSettings[7] == '1') {
+    filterData = requireData.whenData((value) => value
+        .where((element) => ((filterList['picture']!)
+                .contains(element.fileExtension.toLowerCase()) ||
+            (element.type == "directory")))
+        .toList());
+  } else if (menuSettings[8] == '1') {
+    filterData = requireData.whenData((value) => value
+        .where((element) => ((filterList['video']!)
+                .contains(element.fileExtension.toLowerCase()) ||
+            (element.type == "directory")))
+        .toList());
+  } else if (menuSettings[9] == '1') {
+    filterData = requireData.whenData((value) => value
+        .where((element) => ((filterList['document']!)
+                .contains(element.fileExtension.toLowerCase()) ||
+            (element.type == "directory")))
+        .toList());
+  } else if (menuSettings[10] == '1') {
+    filterData = requireData.whenData((value) => value
+        .where((element) => ((filterList['music']!)
+                .contains(element.fileExtension.toLowerCase()) ||
+            (element.type == "directory")))
+        .toList());
+  } else {
+    filterData = requireData;
+  }
+  return filterData;
+
+  // return requireData;
 });
 
 final folderListProviderSorted = Provider((ref) {

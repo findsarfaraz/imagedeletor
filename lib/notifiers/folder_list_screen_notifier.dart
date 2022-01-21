@@ -31,34 +31,11 @@ class FolderListStateNotifier
       state = AsyncValue.loading();
 
       final folder_data = await io.Directory(path).list();
-
-      // final folder_list = await folder_data.toList();
       List<FolderListModel> folderListFinal = [];
-      // folderListFinal = await fetchStats(folder_list);
-
-      // await folder_data.every((element) {
-      //   folderListFinal.add(getFolderListModel(element));
-      // });
 
       await folder_data.forEach((element) {
         folderListFinal.add(getFolderListModel(element));
       });
-
-      // await for (var folder in folder_data)
-      //   folderListFinal.add(FolderListModel(
-      //       accessDate: folder.statSync().accessed,
-      //       changeDate: folder.statSync().changed,
-      //       folderAbsolutePath: folder.absolute.toString(),
-      //       folderPath: folder.path,
-      //       folderFileName: func_list.get_folder_name(folder.path.toString()),
-      //       folderSize: folder.statSync().size.toDouble(),
-      //       fileExtension:
-      //           folder.statSync().type.toString().toLowerCase() == "file"
-      //               ? func_list.get_file_extension(folder.path.toString())
-      //               : '',
-      //       type: folder.statSync().type.toString(),
-      //       modifiedDate: folder.statSync().modified,
-      //       parentFolder: folder.parent.toString()));
 
       final folderListCleanData = folderListFinal.where((element) {
         return (element.folderFileName.substring(0, 1) != ".");
@@ -70,57 +47,48 @@ class FolderListStateNotifier
     }
   }
 
-  void addNewFolder(String folderPath) async {
+  Future<void> addNewFolder(String folderPath) async {
     try {
+      final currentState = state;
+
       final newDir = io.Directory(folderPath);
-      await io.Directory(folderPath).create(recursive: true);
+      await io.Directory(folderPath).create(recursive: false);
 
-      final fileStat = newDir.statSync();
-      final folderModel = FolderListModel(
-          accessDate: fileStat.accessed,
-          changeDate: fileStat.changed,
-          fileExtension: fileStat.type.toString(),
-          folderAbsolutePath: newDir.absolute.toString(),
-          folderPath: folderPath,
-          folderFileName: func_list.get_folder_name(newDir.path.toString()),
-          folderSize: fileStat.size.toDouble(),
-          modifiedDate: fileStat.modified,
-          parentFolder: newDir.parent.toString(),
-          type: fileStat.type.toString());
+      final folderModel = getFolderListModel(newDir);
 
-      state.whenData((folderList) => [...folderList, folderModel]);
+      final newState =
+          currentState.whenData((value) => [...value, folderModel]);
+
+      state = newState.whenData((value) => [...value]);
     } on AppExceptionModel catch (e) {
       state = AsyncValue.error(e);
       ref.read(appExceptionProvider.state).state = e;
     }
   }
 
-  void addNewFile(String filePath) async {
+  Future<void> addNewFile(String filePath) async {
     try {
+      final currentState = state;
       final newFile = io.File(filePath);
       await io.File(filePath).create(recursive: true);
 
-      final fileStat = newFile.statSync();
-      final folderModel = FolderListModel(
-          accessDate: fileStat.accessed,
-          changeDate: fileStat.changed,
-          fileExtension: fileStat.type.toString(),
-          folderAbsolutePath: newFile.absolute.toString(),
-          folderPath: filePath,
-          folderFileName: func_list.get_folder_name(newFile.path.toString()),
-          folderSize: fileStat.size.toDouble(),
-          modifiedDate: fileStat.modified,
-          parentFolder: newFile.parent.toString(),
-          type: fileStat.type.toString());
+      final folderModel = getFolderListModel(newFile);
 
-      state.whenData((folderList) => [...folderList, folderModel]);
+      AsyncValue<List<FolderListModel>> newState =
+          currentState.whenData((folderList) => [...folderList, folderModel]);
+
+      newState.whenData((value) => value.forEach((element) {
+            print(element.folderFileName);
+          }));
+
+      state = newState.whenData((value) => [...value]);
     } on AppExceptionModel catch (e) {
       state = AsyncValue.error(e);
       ref.read(appExceptionProvider.state).state = e;
     }
   }
 
-  void deleteFileFolder(String filePath, String type) async {
+  Future<void> deleteFileFolder(String filePath, String type) async {
     // String fileFolderPath;
     try {
       final folderList = state;
@@ -151,14 +119,16 @@ class FolderListStateNotifier
 
   void pasteFileFolder(
       io.FileSystemEntity fileSystemEntity, String newPath) async {
-    final folderfileName = func_list.get_folder_name(fileSystemEntity.path);
-
-    final type = fileSystemEntity.statSync().type;
-
-    final newfolderFileName =
-        getCopyFileName(newPath, type.toString(), newPath);
-
     try {
+      final currentState = state;
+
+      final folderfileName = func_list.get_folder_name(fileSystemEntity.path);
+
+      final type = fileSystemEntity.statSync().type;
+
+      final newfolderFileName =
+          getCopyFileName(folderfileName, type.toString(), newPath);
+
       if (type.toString() == "file") {
         io.File curFile = io.File(fileSystemEntity.path);
         curFile.copy("${newPath}/${newfolderFileName}");
@@ -172,7 +142,7 @@ class FolderListStateNotifier
 
         await copyDirectory(source, target);
         io.FileSystemEntity newDirectory =
-            io.File("${newPath}/${newfolderFileName}");
+            io.Directory("${newPath}/${newfolderFileName}");
 
         FolderListModel fileListModel = getFolderListModel(newDirectory);
 
@@ -186,6 +156,7 @@ class FolderListStateNotifier
 
   Future<void> copyDirectory(
       io.Directory source, io.Directory destination) async {
+    destination.createSync();
     try {
       source.listSync(recursive: false).forEach((entity) {
         if (entity is io.Directory) {
@@ -221,7 +192,7 @@ class FolderListStateNotifier
 
   String getCopyFileName(String existingFileName, String type, String path) {
     String tryFileName = existingFileName;
-    String newFileName = "";
+    String newFileName = existingFileName;
     int counter = 0;
     if (type == "file") {
       io.FileSystemEntity fileSystemEntity = io.File("${path}/${tryFileName}");
@@ -243,12 +214,13 @@ class FolderListStateNotifier
     } else {
       io.FileSystemEntity fileSystemEntity =
           io.Directory("${path}/${tryFileName}");
+
       while (io.Directory("${path}/${tryFileName}").existsSync()) {
         final fileSplit = existingFileName.split(".");
 
         final String number =
             counter == 0 ? "_Copy" : "_Copy${counter.toString()}";
-        newFileName = "${fileSplit[0]}$number.${fileSplit[1]}";
+        newFileName = "${existingFileName}$number";
 
         if (io.Directory("${path}/${newFileName}").existsSync()) {
           counter++;

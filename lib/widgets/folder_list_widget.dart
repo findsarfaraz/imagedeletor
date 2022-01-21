@@ -25,37 +25,11 @@ class FolderListWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
 
-    // final folderPath = ref.watch(folderPathProvider);
+    ref.listen(appExceptionProvider, (previous, next) {
+      print("Exception ran");
+      print(next.toString());
+    });
 
-    // final loadingState = ref.watch(folderLoadingStateProvider);
-
-    // ref.listen(appExceptionProvider,
-    //     (StateController<AppExceptionModel?> exceptionState) {
-    //   print(exceptionState.state.error.toString());
-    // });
-    void resetState() {
-      ref.read(appMsgProvider.state).state = "";
-      Navigator.pop(context);
-    }
-
-    // ref.listen(appMsgProvider, (previous, next) {
-    //   final infoBox = AlertDialog(
-    //     actions: [
-    //       TextButton(
-    //           onPressed: () {
-    //             resetState();
-    //           },
-    //           child: Text("Ok"))
-    //     ],
-    //     content: Text(next.toString()),
-    //     title: Text("Info"),
-    //   );
-    //   showDialog(
-    //       context: context,
-    //       builder: (builder) {
-    //         return infoBox;
-    //       });
-    // });
     const monthList = [
       "Jan",
       "Feb",
@@ -72,7 +46,7 @@ class FolderListWidget extends ConsumerWidget {
     ];
 
     AsyncValue<List<FolderListModel>> folder_list_data =
-        ref.watch(folderListProviderSorted);
+        ref.watch(folderStateProvider);
 
     Map<SliverToBoxAdapter, SliverList> sliver_widget_map = {};
     List<Widget> widget_list = [];
