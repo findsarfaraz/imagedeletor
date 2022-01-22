@@ -18,6 +18,8 @@ import 'package:imagedeletor/widgets/folder_list_widget.dart';
 import 'package:imagedeletor/widgets/folder_trackback_widget.dart';
 import 'package:imagedeletor/widgets/popup_menu_widget.dart';
 import 'package:imagedeletor/widgets/screen_pop_menu_widget.dart';
+import 'package:path/path.dart' as p;
+import 'dart:io' as io;
 
 final func_list = MiscFunction();
 
@@ -92,19 +94,23 @@ class FolderListScreen extends HookConsumerWidget {
       appBar: AppBar(
         title:
             //  Text('Folder List'),
-            listView ? Text('Folder List') : Text('Folder grid'),
+            p.basename(folderPath) == "0"
+                ? Text("Internal")
+                : Text(p.basename(folderPath)),
         actions: [
           Visibility(
             visible: !(copiedData.path == "storage/emulated/0"),
             child: IconButton(
-                onPressed: () {
-                  ref
+                onPressed: () async {
+                  await ref
                       .read(folderListAsyncProvider.notifier)
                       .pasteFileFolder(copiedData, folderPath);
+                  ref.read(folderCopyStateProvider.state).state =
+                      io.Directory("storage/emulated/0");
                 },
                 icon: Icon(
                   Icons.paste,
-                  color: listView ? Colors.amber : Colors.white,
+                  color: Colors.white,
                 )),
           ),
           IconButton(

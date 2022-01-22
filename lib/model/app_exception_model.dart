@@ -12,3 +12,9 @@ class AppExceptionModel implements Exception {
 //     ''';
 //   }
 }
+
+class AppMessages {
+  final String msg;
+
+  AppMessages(this.msg);
+}

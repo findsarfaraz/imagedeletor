@@ -25,8 +25,12 @@ class FolderListWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
 
-    ref.listen(appExceptionProvider, (previous, next) {
-      print("Exception ran");
+    ref.listen(appMsgProvider, (previous, next) {
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text(next.toString()),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       print(next.toString());
     });
 
@@ -54,6 +58,9 @@ class FolderListWidget extends ConsumerWidget {
 
     return folder_list_data.when(
         data: (data) {
+          data.forEach((element) {
+            element.type.toString();
+          });
           if (data.isNotEmpty) {
             if (menuSettings[5] != '0') {
               int startMonth;
@@ -141,6 +148,8 @@ class FolderListWidget extends ConsumerWidget {
                 }
               });
               distinct_type.sort();
+
+              print(distinct_type.toString());
               distinct_type.forEach((objectType) {
                 List<Widget> new_list_widget = [];
                 var x = data.where((element) => element.type == objectType);
