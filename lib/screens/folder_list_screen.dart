@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imagedeletor/misc_function.dart';
+import 'package:imagedeletor/model/folder_list_model.dart';
 import 'package:imagedeletor/providers/folder_copy_paste_function_provider.dart';
 import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
@@ -44,12 +45,15 @@ class FolderListScreen extends HookConsumerWidget {
   double menuHeight = 400;
   bool listView = true;
 
+  bool multiSelectMode = false;
+  int selectedItemCount = 0;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     screenWidth = MediaQuery.of(context).size.width;
 
     screenHeight = MediaQuery.of(context).size.height;
-
+    List<Widget> actionButton = [];
     final copiedData = ref.watch(folderCopyProvider);
     final folderPath = ref.watch(folderPathProvider);
     final providerMenuSettings = ref.watch(folderSettingNotifierProvider);
@@ -90,108 +94,116 @@ class FolderListScreen extends HookConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        title:
-            //  Text('Folder List'),
-            p.basename(folderPath) == "0"
-                ? Text("Internal")
-                : Text(p.basename(folderPath)),
-        actions: [
-          Visibility(
-            visible: !(copiedData.path == "storage/emulated/0"),
-            child: IconButton(
-                onPressed: () async {
-                  await ref
-                      .read(folderListAsyncProvider.notifier)
-                      .pasteFileFolder(copiedData, folderPath);
-                  ref.read(folderCopyStateProvider.state).state =
-                      io.Directory("storage/emulated/0");
-                },
-                icon: Icon(
-                  Icons.paste,
-                  color: Colors.white,
-                )),
-          ),
-          IconButton(
-              onPressed: () {
-                func_list.copyFile();
-              },
-              icon: Icon(
-                Icons.ac_unit,
-                color: listView ? Colors.amber : Colors.white,
-              )),
-          IconButton(
-              key: _iconButtonKey,
-              onPressed: () {
-                if (isMenuOpen) {
-                  closeMenu(_animationController);
-                } else {
-                  openMenu(_animationController);
-                }
-              },
-              icon: FaIcon(
-                FontAwesomeIcons.chevronCircleDown,
-                color: Colors.white,
-              )),
-          PopupMenuButton(
-              onSelected: (value) {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return NewFolderFileWidget(value.toString());
-                    });
-              },
-              itemBuilder: (context) => [
-                    PopupMenuItem(
-                      onTap: () {},
-                      child: Text("New Folder"),
-                      value: 1,
-                    ),
-                    PopupMenuItem(
-                      onTap: () {},
-                      child: Text("New File"),
-                      value: 2,
-                    )
-                  ])
-        ],
-      ),
-      drawer: Container(
-        child: DrawerWidget(),
-      ),
-      body: Column(children: [
-        Flexible(
-          fit: FlexFit.tight,
-          flex: 1,
-          child: Container(
-            padding: EdgeInsets.all(0),
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
-            child: FolderTrackBackWidget(),
-            decoration: BoxDecoration(color: Colors.white, boxShadow: [
-              BoxShadow(blurRadius: 2, spreadRadius: 1, color: Colors.grey)
-            ]),
-            width: double.infinity,
-          ),
+        backgroundColor: Colors.grey[200],
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: Consumer(builder: (context, ref, child) {
+            final folderListData = ref.watch(folderStateProvider);
+
+            final selectedItemCount = folderListData
+                .whenData((value) => value
+                    .where((element) => element.selected == true)
+                    .toList()
+                    .length)
+                .value;
+            return AppBar(
+              title: selectedItemCount == 0
+                  ? p.basename(folderPath) == "0"
+                      ? Text("Internal")
+                      : Text(p.basename(folderPath))
+                  : Text("${selectedItemCount} Selected"),
+              actions: selectedItemCount == 0
+                  ? [
+                      Visibility(
+                        visible: !(copiedData.path == "storage/emulated/0"),
+                        child: IconButton(
+                            onPressed: () async {
+                              await ref
+                                  .read(folderListAsyncProvider.notifier)
+                                  .pasteFileFolder(copiedData, folderPath);
+                              ref.read(folderCopyStateProvider.state).state =
+                                  io.Directory("storage/emulated/0");
+                            },
+                            icon: Icon(
+                              Icons.paste,
+                              color: Colors.white,
+                            )),
+                      ),
+                      IconButton(
+                          key: _iconButtonKey,
+                          onPressed: () {
+                            if (isMenuOpen) {
+                              closeMenu(_animationController);
+                            } else {
+                              openMenu(_animationController);
+                            }
+                          },
+                          icon: FaIcon(
+                            FontAwesomeIcons.chevronCircleDown,
+                            color: Colors.white,
+                          )),
+                      PopupMenuButton(
+                          onSelected: (value) {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return NewFolderFileWidget(value.toString());
+                                });
+                          },
+                          itemBuilder: (context) => [
+                                PopupMenuItem(
+                                  onTap: () {},
+                                  child: Text("New Folder"),
+                                  value: 1,
+                                ),
+                                PopupMenuItem(
+                                  onTap: () {},
+                                  child: Text("New File"),
+                                  value: 2,
+                                )
+                              ])
+                    ]
+                  : actionButton = [
+                      IconButton(
+                          onPressed: () {
+                            print("Print copy");
+                          },
+                          icon: FaIcon(FontAwesomeIcons.copy)),
+                      IconButton(
+                          onPressed: () {
+                            print("Print delete");
+                          },
+                          icon: FaIcon(FontAwesomeIcons.trashAlt))
+                    ],
+            );
+          }),
         ),
-        Flexible(
+        drawer: Container(
+          child: DrawerWidget(),
+        ),
+        body: Column(children: [
+          Flexible(
             fit: FlexFit.tight,
-            flex: 10,
-            child: providerMenuSettings.menuSettings[0] == "1"
-                ? FolderListWidget()
-                : FolderListWidget()
-            // FolderGridWidget(),
+            flex: 1,
+            child: Container(
+              padding: EdgeInsets.all(0),
+              margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+              child: FolderTrackBackWidget(),
+              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                BoxShadow(blurRadius: 2, spreadRadius: 1, color: Colors.grey)
+              ]),
+              width: double.infinity,
             ),
-      ]),
-      // floatingActionButton: Visibility(
-      //   visible: !(copiedData.path == "storage/emulated/0"),
-      //   child: FloatingActionButton(
-      //     onPressed: () {
-      //       print(copiedData.path);
-      //     },
-      //     child: FaIcon(FontAwesomeIcons.paste),
-      //   ),
-      // ),
-    );
+          ),
+          Flexible(
+              fit: FlexFit.tight,
+              flex: 10,
+              child: providerMenuSettings.menuSettings[0] == "1"
+                  ? FolderListWidget()
+                  : FolderListWidget()
+              // FolderGridWidget(),
+              ),
+        ]));
   }
 
   OverlayEntry _overlayEntryBuilder(

@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imagedeletor/model/app_exception_model.dart';
 import 'package:imagedeletor/model/folder_list_model.dart';
+import 'package:imagedeletor/model/folder_menu_settings.dart';
 import 'package:imagedeletor/providers/app_exception_provider.dart';
 import 'package:imagedeletor/providers/folder_copy_paste_function_provider.dart';
 import 'package:imagedeletor/providers/folder_list_provider.dart';
@@ -22,6 +23,10 @@ class FolderListWidget extends ConsumerWidget {
 
 // class FolderListWidgetState extends ConsumerState<FolderListWidget> {
 //   @override
+  bool multiSelectMode = false;
+  int countSelected = 0;
+
+  final List<FolderViewModel> selected = [];
   Widget build(BuildContext context, WidgetRef ref) {
     final menuSettings = ref.watch(folderSettingNotifierProvider).menuSettings;
 
@@ -31,7 +36,27 @@ class FolderListWidget extends ConsumerWidget {
         content: Text(next.toString()),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      print(next.toString());
+    });
+
+    ref.listen<AsyncValue<List<FolderListModel>>>(folderStateProvider,
+        (previous, next) {
+      final selectedCount = next
+          .whenData((value) => value
+              .where((element) => element.selected == true)
+              .toList()
+              .length)
+          .value;
+
+      print(
+          "VALUE OF SELECTED COUNT ${selectedCount.toString()} ${multiSelectMode.toString()} ");
+      if (selectedCount == 0) {
+        print("ran selected count");
+        multiSelectMode = false;
+      } else if (selectedCount != 0) {
+        multiSelectMode = true;
+      }
+      print(
+          "VALUE OF SELECTED COUNT ${selectedCount.toString()} ${multiSelectMode.toString()} ");
     });
 
     const monthList = [
@@ -88,29 +113,37 @@ class FolderListWidget extends ConsumerWidget {
                 if (x.length > 0) {
                   x.forEach((i) {
                     new_list_widget.add(ListTile(
-                        onTap: () {
-                          i.type == 'directory'
-                              ? ref
+                        onLongPress: () {
+                          ref
+                              .read(folderListAsyncProvider.notifier)
+                              .toggleSelected(i);
+                        },
+                        onTap: () async {
+                          !multiSelectMode && i.type == 'directory'
+                              ? await ref
                                   .read(
                                       folderPathStateNotifierProvider.notifier)
                                   .updatePath(i.folderPath)
-                              : null;
-                          ref.read(folderLoadingStateProvider.state).state =
-                              true;
-                          // setState(() {
-                          //   isLoading = true;
-                          // });
+                              : ref
+                                  .read(folderListAsyncProvider.notifier)
+                                  .toggleSelected(i);
                         },
                         key: ObjectKey(i.folderPath),
-                        leading: i.type == "directory"
-                            ? FaIcon(
-                                FontAwesomeIcons.solidFolder,
-                                color: Colors.amber,
-                              )
-                            : FaIcon(
-                                FontAwesomeIcons.fileAlt,
-                                color: Colors.grey,
-                              ),
+                        leading: Container(
+                          alignment: Alignment.center,
+                          width: 50,
+                          child: i.type == "directory"
+                              ? i.selected
+                                  ? FaIcon(FontAwesomeIcons.checkCircle,
+                                      color: Colors.blue)
+                                  : FaIcon(FontAwesomeIcons.solidFolder,
+                                      color: Colors.amber)
+                              : i.selected
+                                  ? FaIcon(FontAwesomeIcons.checkCircle,
+                                      color: Colors.blue)
+                                  : FaIcon(FontAwesomeIcons.fileAlt,
+                                      color: Colors.grey),
+                        ),
                         title: Text(i.folderFileName),
                         trailing: FaIcon(FontAwesomeIcons.ellipsisV,
                             color: Colors.black, size: 15)));
@@ -156,31 +189,37 @@ class FolderListWidget extends ConsumerWidget {
                 if (x.length > 0) {
                   x.forEach((i) {
                     new_list_widget.add(ListTile(
+                        onLongPress: () {
+                          ref
+                              .read(folderListAsyncProvider.notifier)
+                              .toggleSelected(i);
+                        },
                         onTap: () async {
-                          print("function called");
-
-                          i.type == 'directory'
+                          !multiSelectMode && i.type == 'directory'
                               ? await ref
                                   .read(
                                       folderPathStateNotifierProvider.notifier)
                                   .updatePath(i.folderPath)
-                              : null;
-
-                          // ref.read(folderLoadingStateProvider.state).state = true;
-                          // setState(() {
-                          //   isLoading = true;
-                          // });
+                              : ref
+                                  .read(folderListAsyncProvider.notifier)
+                                  .toggleSelected(i);
                         },
                         key: ObjectKey(i.folderPath),
-                        leading: i.type == "directory"
-                            ? FaIcon(
-                                FontAwesomeIcons.solidFolder,
-                                color: Colors.amber,
-                              )
-                            : FaIcon(
-                                FontAwesomeIcons.fileAlt,
-                                color: Colors.grey,
-                              ),
+                        leading: Container(
+                          alignment: Alignment.center,
+                          width: 50,
+                          child: i.type == "directory"
+                              ? (i.selected
+                                  ? FaIcon(FontAwesomeIcons.checkCircle,
+                                      color: Colors.blue)
+                                  : FaIcon(FontAwesomeIcons.solidFolder,
+                                      color: Colors.amber))
+                              : (i.selected
+                                  ? FaIcon(FontAwesomeIcons.checkCircle,
+                                      color: Colors.blue)
+                                  : FaIcon(FontAwesomeIcons.fileAlt,
+                                      color: Colors.grey)),
+                        ),
                         title: Text(i.folderFileName),
                         trailing:
                             PopupMenuFunctionWidget(i.folderPath, i.type)));

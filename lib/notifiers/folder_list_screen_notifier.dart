@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:imagedeletor/Theme/apptheme.dart';
 import 'package:imagedeletor/model/app_exception_model.dart';
 import 'package:imagedeletor/model/folder_list_model.dart';
+import 'package:imagedeletor/model/folder_menu_settings.dart';
 import 'package:imagedeletor/providers/app_exception_provider.dart';
 import 'package:imagedeletor/providers/folder_copy_paste_function_provider.dart';
 import 'package:imagedeletor/providers/folder_list_provider.dart';
@@ -202,7 +203,8 @@ class FolderListStateNotifier
           accessDate: stat.accessed,
           modifiedDate: stat.modified,
           fileExtension: p.extension(fileSystemEntity.path),
-          parentFolder: fileSystemEntity.parent.toString());
+          parentFolder: fileSystemEntity.parent.toString(),
+          selected: false);
     } catch (e) {
       print(e.toString());
     }
@@ -254,5 +256,25 @@ class FolderListStateNotifier
     }
 
     return newFileName;
+  }
+
+  void toggleSelected(FolderListModel folderListModel) {
+    try {
+      final currentState = state;
+
+      folderListModel.selected = !folderListModel.selected;
+      final currrentValue = currentState.whenData((value) => value
+          .where((element) => element.folderPath == folderListModel.folderPath)
+          .first
+          .selected);
+      currentState.whenData((value) => value
+          .where((element) => element.folderPath == folderListModel.folderPath)
+          .first
+          .selected = currrentValue as bool);
+
+      state = currentState.whenData((value) => [...value]);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

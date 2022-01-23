@@ -8,9 +8,8 @@ class FolderListModel {
   DateTime accessDate;
   DateTime modifiedDate;
   String fileExtension;
-
   String parentFolder;
-
+  bool selected;
   FolderListModel(
       {required this.folderFileName,
       required this.folderPath,
@@ -21,5 +20,6 @@ class FolderListModel {
       required this.accessDate,
       required this.modifiedDate,
       required this.fileExtension,
-      required this.parentFolder});
+      required this.parentFolder,
+      required this.selected});
 }
