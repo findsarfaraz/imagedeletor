@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
-import 'dart:io' as io;
-
 import 'package:imagedeletor/providers/permission_provider.dart';
 
 class NewFolderFileWidget extends HookConsumerWidget {

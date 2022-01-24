@@ -4,7 +4,6 @@ import 'package:imagedeletor/model/folder_list_model.dart';
 import 'package:imagedeletor/notifiers/folder_list_screen_notifier.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
 import 'package:riverpod/riverpod.dart';
-import 'dart:io' as io;
 
 final providerFilterListProvider = Provider<FileTypeFilterModel>((ref) {
   return FileTypeFilterModel("");

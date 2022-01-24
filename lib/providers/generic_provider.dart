@@ -1,6 +1,4 @@
 import 'package:imagedeletor/notifiers/folder_path_state_notifier.dart';
-import 'package:imagedeletor/providers/folder_list_provider.dart';
-import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:riverpod/riverpod.dart';
 
 final folderPathStateNotifierProvider =

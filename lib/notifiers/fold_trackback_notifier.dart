@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:imagedeletor/misc_function.dart';
 import 'package:imagedeletor/model/folder_trackback_model.dart';

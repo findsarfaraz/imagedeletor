@@ -1,26 +1,20 @@
-import 'dart:ui';
+import 'dart:io' as io;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imagedeletor/misc_function.dart';
-import 'package:imagedeletor/model/folder_list_model.dart';
 import 'package:imagedeletor/providers/folder_copy_paste_function_provider.dart';
 import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
-import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
 import 'package:imagedeletor/widgets/drawer_widget.dart';
-import 'package:imagedeletor/widgets/folder_grid_widget.dart';
 import 'package:imagedeletor/widgets/folder_list_widget.dart';
 import 'package:imagedeletor/widgets/folder_trackback_widget.dart';
 import 'package:imagedeletor/widgets/popup_menu_widget.dart';
 import 'package:imagedeletor/widgets/screen_pop_menu_widget.dart';
 import 'package:path/path.dart' as p;
-import 'dart:io' as io;
 
 final func_list = MiscFunction();
 
@@ -53,7 +47,7 @@ class FolderListScreen extends HookConsumerWidget {
     screenWidth = MediaQuery.of(context).size.width;
 
     screenHeight = MediaQuery.of(context).size.height;
-    List<Widget> actionButton = [];
+
     final copiedData = ref.watch(folderCopyProvider);
     final folderPath = ref.watch(folderPathProvider);
     final providerMenuSettings = ref.watch(folderSettingNotifierProvider);
@@ -163,7 +157,7 @@ class FolderListScreen extends HookConsumerWidget {
                                 )
                               ])
                     ]
-                  : actionButton = [
+                  : [
                       IconButton(
                           onPressed: () {
                             print("Print copy");

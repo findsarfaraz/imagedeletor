@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:imagedeletor/model/app_exception_model.dart';
 import 'package:imagedeletor/model/folder_list_model.dart';
 import 'package:imagedeletor/model/folder_menu_settings.dart';
 import 'package:imagedeletor/providers/app_exception_provider.dart';
-import 'package:imagedeletor/providers/folder_copy_paste_function_provider.dart';
 import 'package:imagedeletor/providers/folder_list_provider.dart';
 import 'package:imagedeletor/providers/folder_setting_provider.dart';
-import 'package:imagedeletor/providers/folder_trackback_provider.dart';
 import 'package:imagedeletor/providers/generic_provider.dart';
 import 'package:imagedeletor/widgets/popmenu_function_widget.dart';
 import 'package:intl/intl.dart' as intl;
-import 'dart:io' as io;
 
 class FolderListWidget extends ConsumerWidget {
 // {

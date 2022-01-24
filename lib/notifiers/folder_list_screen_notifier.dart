@@ -1,18 +1,13 @@
 import 'dart:io' as io;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:imagedeletor/Theme/apptheme.dart';
 import 'package:imagedeletor/model/app_exception_model.dart';
 import 'package:imagedeletor/model/folder_list_model.dart';
-import 'package:imagedeletor/model/folder_menu_settings.dart';
 import 'package:imagedeletor/providers/app_exception_provider.dart';
-import 'package:imagedeletor/providers/folder_copy_paste_function_provider.dart';
-import 'package:imagedeletor/providers/folder_list_provider.dart';
-import 'package:imagedeletor/providers/folder_setting_provider.dart';
-import 'package:imagedeletor/providers/generic_provider.dart';
-import 'package:riverpod/riverpod.dart';
-import '../misc_function.dart' as misc_func;
 import 'package:path/path.dart' as p;
+import 'package:riverpod/riverpod.dart';
+
+import '../misc_function.dart' as misc_func;
 
 class FolderListStateNotifier
     extends StateNotifier<AsyncValue<List<FolderListModel>>> {
