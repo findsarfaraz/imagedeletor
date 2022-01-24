@@ -117,7 +117,7 @@ class FolderListStateNotifier
   Future<void> pasteFileFolder(
       io.FileSystemEntity fileSystemEntity, String newPath) async {
     try {
-      final currentState = state;
+      // final currentState = state;
 
       final folderfileName = await p.basename(fileSystemEntity.path);
 

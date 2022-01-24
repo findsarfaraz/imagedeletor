@@ -71,17 +71,6 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
   Widget build(BuildContext context) {
     // context.read(homeScreenNotifierProvider.notifier).getSizeForNotifier();
 
-    Future<void> getBatteryFlutterLevel() async {
-      String batteryLevel;
-      try {
-        final int result = await platform.invokeMethod("getPermission");
-        batteryLevel = 'Battery level at $result % .';
-      } on PlatformException catch (e) {
-        print("Try part ran");
-        batteryLevel = "Failed to get battery level: '${e.message}'.";
-      }
-    }
-
     return Scaffold(
       // backgroundColor: Colors.grey[200],
       appBar: AppBar(
