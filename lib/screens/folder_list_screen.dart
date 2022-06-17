@@ -45,7 +45,7 @@ class FolderListScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     screenWidth = MediaQuery.of(context).size.width;
-
+    bool removeDialog = false;
     screenHeight = MediaQuery.of(context).size.height;
 
     final copiedData = ref.watch(folderCopyProvider);
@@ -87,13 +87,71 @@ class FolderListScreen extends HookConsumerWidget {
       isMenuOpen = !isMenuOpen;
     }
 
+    showProgressIndicator() async {
+      final alert1 = AlertDialog(
+          title: Text("Delete Progress"),
+          content: Container(child: Consumer(builder: (context, ref, child) {
+            final data = ref.watch(folderCopyDeleteStatus);
+
+            return Container(
+                height: 150,
+                child: Center(
+                    child: Column(children: [
+                  Text(data["foldername"].toString()),
+                  Text(data["complete_percentage"].toString())
+                ])));
+          })));
+
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return alert1;
+          });
+    }
+
+    multiDelete() async {
+      final yesButton = TextButton(
+          child: Text("Yes"),
+          onPressed: () async {
+            Navigator.pop(context);
+            ref.read(isDeleteStatusProvider.state).state = true;
+
+            ref.read(folderListAsyncProvider.notifier).MultiDelete();
+          });
+      final noButton = TextButton(
+          child: Text("No"),
+          onPressed: () {
+            Navigator.of(context);
+          });
+
+      final alert = AlertDialog(
+          actions: [yesButton, noButton],
+          title: Text("Delete Confirmation"),
+          content: Text("Do you want to delete all these file/folders?"));
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          });
+    }
+
+    ref.listen<bool>(isDeleteStatusProvider, (previous, next) {
+      if (next) {
+        showProgressIndicator();
+      } else {
+        Navigator.pop(context);
+      }
+    });
+
     return Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
           child: Consumer(builder: (context, ref, child) {
             final folderListData = ref.watch(folderStateProvider);
-
+            // final folderCopyStatus = ref.watch(folderCopyDeleteStatus);
+            // print(folderCopyStatus["foldername"]);
             final selectedItemCount = folderListData
                 .whenData((value) => value
                     .where((element) => element.selected == true)
@@ -159,13 +217,11 @@ class FolderListScreen extends HookConsumerWidget {
                     ]
                   : [
                       IconButton(
-                          onPressed: () {
-                            print("Print copy");
-                          },
+                          onPressed: () {},
                           icon: FaIcon(FontAwesomeIcons.copy)),
                       IconButton(
-                          onPressed: () {
-                            print("Print delete");
+                          onPressed: () async {
+                            await multiDelete();
                           },
                           icon: FaIcon(FontAwesomeIcons.trashAlt))
                     ],

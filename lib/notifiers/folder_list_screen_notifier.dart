@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:imagedeletor/model/app_exception_model.dart';
 import 'package:imagedeletor/model/folder_list_model.dart';
 import 'package:imagedeletor/providers/app_exception_provider.dart';
+import 'package:imagedeletor/providers/folder_copy_paste_function_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:riverpod/riverpod.dart';
 
@@ -29,7 +31,13 @@ class FolderListStateNotifier
       final folder_data = await io.Directory(path).list();
       List<FolderListModel> folderListFinal = [];
 
+      // folder_data.map((event) async {
+      //   final fileListModel = await getFolderListModel(event);
+      //   folderListFinal.add(fileListModel);
+      // }).listen(print);
+
       await folder_data.forEach((element) async {
+        print(element.path);
         final fileListModel = await getFolderListModel(element);
         folderListFinal.add(fileListModel);
       });
@@ -95,13 +103,11 @@ class FolderListStateNotifier
               value.where((element) => element.folderPath == filePath).first)
           .value;
 
-      // final delFileSystemEntity =
-      //     folderList.where((element) => element.folderPath == filePath).first;
       if (type.toLowerCase() == "file") {
         io.File((delFileSystemEntity?.folderPath)!).delete();
       } else if (type.toLowerCase() == "directory") {
         io.Directory((delFileSystemEntity?.folderPath)!)
-            .delete(recursive: true);
+            .deleteSync(recursive: true);
       }
 
       folderList.whenData(
@@ -185,7 +191,7 @@ class FolderListStateNotifier
   Future<FolderListModel> getFolderListModel(
       io.FileSystemEntity fileSystemEntity) async {
     late FolderListModel folderListModel;
-    final stat = await fileSystemEntity.stat();
+    final stat = await fileSystemEntity.statSync();
 
     try {
       folderListModel = FolderListModel(
@@ -271,5 +277,45 @@ class FolderListStateNotifier
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  MultiDelete() async {
+    final currentState = state;
+    int counter = 1;
+    Map<String, String> completeStatus = {
+      "foldername": "xxx",
+      "complete_percentage": "0.0"
+    };
+    final List<FolderListModel> folderState = [];
+    final selectedFiles = await currentState.whenData(
+        (value) => value.where((element) => element.selected == true));
+
+    selectedFiles.whenData((value) {
+      value.forEach((element) {
+        folderState.add(element);
+      });
+    });
+
+    final totalLength = folderState.length;
+
+    for (var v in folderState) {
+      completeStatus["foldername"] = v.folderFileName;
+      completeStatus["complete_percentage"] =
+          (counter.toDouble() / totalLength.toDouble() * 100)
+              .toStringAsFixed(2);
+
+      await Future.delayed((Duration(seconds: 1)));
+      await updateDeleteStatus(completeStatus);
+      deleteFileFolder(v.folderPath, v.type);
+      counter++;
+    }
+    if (completeStatus["complete_percentage"] == "100.00") {
+      ref.read(isDeleteStatusProvider.state).state = false;
+      ref.refresh(folderCopyDeleteStatus);
+    }
+  }
+
+  updateDeleteStatus(Map<String, String> status) async {
+    ref.read(folderCopyDeleteStatus.state).state = status;
   }
 }

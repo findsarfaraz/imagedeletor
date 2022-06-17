@@ -43,16 +43,11 @@ class FolderListWidget extends ConsumerWidget {
               .length)
           .value;
 
-      print(
-          "VALUE OF SELECTED COUNT ${selectedCount.toString()} ${multiSelectMode.toString()} ");
       if (selectedCount == 0) {
-        print("ran selected count");
         multiSelectMode = false;
       } else if (selectedCount != 0) {
         multiSelectMode = true;
       }
-      print(
-          "VALUE OF SELECTED COUNT ${selectedCount.toString()} ${multiSelectMode.toString()} ");
     });
 
     const monthList = [
@@ -191,14 +186,16 @@ class FolderListWidget extends ConsumerWidget {
                               .toggleSelected(i);
                         },
                         onTap: () async {
-                          !multiSelectMode && i.type == 'directory'
-                              ? await ref
-                                  .read(
-                                      folderPathStateNotifierProvider.notifier)
-                                  .updatePath(i.folderPath)
-                              : ref
+                          multiSelectMode
+                              ? ref
                                   .read(folderListAsyncProvider.notifier)
-                                  .toggleSelected(i);
+                                  .toggleSelected(i)
+                              : i.type == "directory"
+                                  ? await ref
+                                      .read(folderPathStateNotifierProvider
+                                          .notifier)
+                                      .updatePath(i.folderPath)
+                                  : null;
                         },
                         key: ObjectKey(i.folderPath),
                         leading: Container(
