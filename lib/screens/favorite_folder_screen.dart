@@ -42,7 +42,7 @@ class FolderListWidget extends ConsumerWidget {
       child: Column(children: [
         Container(
           alignment: Alignment.centerLeft,
-          margin: EdgeInsets.all(10),
+          margin: EdgeInsets.all(15),
           child: Text(
             'Categories',
             style: Theme.of(context).textTheme.headline1,

@@ -77,6 +77,7 @@ class FolderListWidget extends ConsumerWidget {
           data.forEach((element) {
             element.type.toString();
           });
+
           if (data.isNotEmpty) {
             if (menuSettings[5] != '0') {
               int startMonth;

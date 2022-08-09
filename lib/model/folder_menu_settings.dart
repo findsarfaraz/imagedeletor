@@ -12,7 +12,7 @@ class FolderViewModel extends ChangeNotifier {
       case 0:
         {
           if (menuSettings[0] == "0") {
-            menuSettings[0] = "1";
+            menuSettings[0]= "1";
             menuSettings[1] = "0";
             change = 0;
           }
@@ -153,7 +153,7 @@ class FolderViewModel extends ChangeNotifier {
             menuSettings[10] = "1";
             change = 0;
           }
-        }
+        }`
         break;
     }
     notifyListeners();
